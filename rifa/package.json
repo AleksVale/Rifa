@@ -1,5 +1,5 @@
 {
-  "name": "rifa",
+  "name": "tailadmin-free-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.0.3"
+    "@react-jvectormap/core": "^1.0.4",
+    "@react-jvectormap/unitedstates": "^1.0.1",
+    "@types/node": "20.4.8",
+    "apexcharts": "^3.41.1",
+    "autoprefixer": "10.4.14",
+    "eslint-config-next": "13.4.12",
+    "jsvectormap": "^1.5.3",
+    "next": "13.4.12",
+    "postcss": "8.4.27",
+    "react": "18.2.0",
+    "react-apexcharts": "^1.4.1",
+    "react-dom": "18.2.0",
+    "react-jvectormap": "^0.0.16",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.1.6"
   },
   "devDependencies": {
-    "autoprefixer": "^10.0.1",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.3"
+    "@rocketseat/eslint-config": "^2.1.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "eslint": "^8.54.0"
   }
 }
