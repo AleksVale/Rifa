@@ -39,7 +39,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   // close if the esc key is pressed
   useEffect(() => {
     const keyHandler = ({ key }: KeyboardEvent) => {
-      console.log(key)
       if (!sidebarOpen || key !== 'Escape') return
       setSidebarOpen(false)
     }
