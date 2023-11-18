@@ -17,7 +17,7 @@ const MapOne = dynamic(() => import('../Maps/MapOne'), {
 const ECommerce: React.FC = () => {
   return (
     <>
-      <div>ola</div>
+      <div>ola teste</div>
     </>
   )
 }
