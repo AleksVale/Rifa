@@ -7,6 +7,9 @@ import Loader from '@/components/common/Loader'
 
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({
   children,
@@ -23,7 +26,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className={inter.className}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? (
             <Loader />
@@ -47,7 +50,7 @@ export default function RootLayout({
 
                 {/* <!-- ===== Main Content Start ===== --> */}
                 <main>
-                  <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                  <div className="mx-auto text-slate-900 max-w-screen-2xl p-6 md:p-8 2xl:p-12">
                     {children}
                   </div>
                 </main>
