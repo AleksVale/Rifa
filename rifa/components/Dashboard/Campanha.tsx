@@ -2,6 +2,8 @@
 import Link from 'next/link'
 import React from 'react'
 import { FaTriangleExclamation, FaTicket } from 'react-icons/fa6'
+import Autocomplete from '../Autocomplete/Autocomplete'
+import { Select } from '../Select/Select'
 
 const Campanha: React.FC = () => {
   return (
@@ -31,6 +33,17 @@ const Campanha: React.FC = () => {
       <p className="text-gray-500 mt-2 text-sm">
         Aqui estão suas campanhas criadas.
       </p>
+      <div>
+        <Select
+          options={[
+            {
+              id: 'andamento',
+              label: 'Em andamento',
+            },
+            { id: 'finish', label: 'Encerrada' },
+          ]}
+        />
+      </div>
     </div>
   )
 }
