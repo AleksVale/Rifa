@@ -1,7 +1,4 @@
 import Link from 'next/link'
-import DarkModeSwitcher from './DarkModeSwitcher'
-import DropdownMessage from './DropdownMessage'
-import DropdownNotification from './DropdownNotification'
 import DropdownUser from './DropdownUser'
 import Image from 'next/image'
 
@@ -69,12 +66,6 @@ const Header = (props: {
         <div className="hidden sm:block"></div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
-          <ul className="flex items-center gap-2 2xsm:gap-4">
-            {/* <!-- Dark Mode Toggler --> */}
-            <DarkModeSwitcher />
-            {/* <!-- Dark Mode Toggler --> */}
-          </ul>
-
           {/* <!-- User Area --> */}
           <DropdownUser />
           {/* <!-- User Area --> */}

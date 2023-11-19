@@ -12,7 +12,6 @@ module.exports = {
     fontFamily: {
       satoshi: ['Satoshi', 'sans-serif'],
     },
-
     screens: {
       '2xsm': '375px',
       xsm: '425px',
@@ -34,10 +33,6 @@ module.exports = {
         primary: '#3C50E0',
         secondary: '#80CAEE',
         stroke: '#E2E8F0',
-        gray: '#EFF4FB',
-        graydark: '#333A48',
-        'gray-2': '#F7F9FC',
-        'gray-3': '#FAFAFA',
         whiten: '#F1F5F9',
         whiter: '#F5F7FD',
         boxdark: '#24303F',
