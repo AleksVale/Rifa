@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 
@@ -21,7 +22,7 @@ export function Select({ options }: Props) {
 
   return (
     <div className=" items-center">
-      <div className="w-full max-w-xs">
+      <div className="w-full">
         <Listbox
           as="div"
           className="space-y-1"
