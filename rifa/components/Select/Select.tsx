@@ -9,15 +9,17 @@ interface Option {
 
 interface Props {
   options: Option[]
+  onChange?: (option: string) => void
 }
 
-export function Select({ options }: Props) {
+export function Select({ options, onChange }: Props) {
   const [selectedPerson, setSelectedPerson] = useState('Selecione uma opção')
 
   const handleSelectOptions = (option: string) => {
     setSelectedPerson(
       options.find((item) => item.label === option)?.label ?? options[0].label,
     )
+    onChange?.(option)
   }
 
   return (
