@@ -1,10 +1,16 @@
 'use client'
-import React from 'react'
 import { Carousel } from 'react-responsive-carousel'
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
+import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
+
+import imagem1 from '../../public/images/brand/brand-01.svg'
+
+import imagem2 from '../../public/images/brand/brand-02.svg'
+
+import imagem3 from '../../public/images/brand/brand-03.svg'
 
 import { Metadata } from 'next'
-import teste1 from '../public/carousel/teste1.png'
+import Image from 'next/image'
+import { ImagemCarousel } from '@/components/ImagemCarousel/ImagemCarousel'
 export const metadata: Metadata = {
   title: 'Tables Page | Next.js E-commerce Dashboard Template',
   description: 'This is Tables page for TailAdmin Next.js',
@@ -13,17 +19,13 @@ export const metadata: Metadata = {
 
 const TablesPage = () => {
   return (
-    <>
-      <div className="mx-auto max-w-270">
-        <div className="text-title-md2 font-semibold text-black py-11">
-          <h1>🏆 Ganhadores</h1>
-        </div>
-        <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"></div>
-        <div className="container w-auto h-auto flex-auto py-5">
-          <div className="w-screen w-auto h-auto flex-auto"></div>
-        </div>
-      </div>
-    </>
+    <div className="w-2/3">
+      <Carousel showArrows>
+        <ImagemCarousel src={imagem1} />
+        <ImagemCarousel src={imagem2} />
+        <ImagemCarousel src={imagem3} />
+      </Carousel>
+    </div>
   )
 }
 

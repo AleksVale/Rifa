@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
+    "@hookform/resolvers": "^3.3.2",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/unitedstates": "^1.0.1",
     "@types/node": "20.4.8",
@@ -21,12 +22,15 @@
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-currency-input-field": "^3.6.12",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.48.2",
     "react-icons": "^4.12.0",
     "react-jvectormap": "^0.0.16",
     "react-responsive-carousel": "^3.2.23",
     "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.1.0",
