@@ -1,3 +1,4 @@
+'use client'
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import Image from 'next/image'
 
@@ -5,14 +6,17 @@ import { Select } from '@/components/Select/Select'
 import { Metadata } from 'next'
 import DropdownDefault from '@/components/Dropdowns/DropdownDefault'
 import Dropdawn from '@/components/Dropdawn/Dropdawn'
+import { Transition } from '@headlessui/react'
+import { useState } from 'react'
 export const metadata: Metadata = {
   title: 'Profile Page | Next.js E-commerce Dashboard Template',
   description: 'This is Profile page for TailAdmin Next.js',
   // other metadata
 }
-const selectOptions = [{ id: 'gato', label: 'cavalo' }]
+const selectOptions = [{ id: 'gato', label: 'teste' }]
 
 const Profile = () => {
+  const [isShowing, setIsShowing] = useState(false)
   return (
     <>
       <div className="container mx-auto px-5">
@@ -20,11 +24,11 @@ const Profile = () => {
           Histórico de colaborações
         </h1>
       </div>
-      <div className="box-border border-neutral-950 h-128 w-128 p-8 border rounded-lg relative top-15">
-        <div className="container mx-auto flex-auto">
+      <div className="box-border border-neutral-950 h-full w-full p-8 border rounded-lg relative top-15">
+        <div className="container mx-auto flex flex-col md:flex-row">
           <label className="text-[#334155]">Selecione uma campanha</label>
         </div>
-        <div className="container flex justify-between space-x-1">
+        <div className="container flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:space-x-2">
           <div className="flex-1">
             <Select options={selectOptions} />
           </div>
@@ -50,7 +54,10 @@ const Profile = () => {
             </button>
           </div>
           <div>
-            <button className="flex items-center justify-center bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-3 border border-gray-400 rounded-lg space-x-2 ">
+            <button
+              onClick={() => setIsShowing((isShowing) => !isShowing)}
+              className="flex items-center justify-center bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-3 border border-gray-400 rounded-lg space-x-2 "
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -70,6 +77,40 @@ const Profile = () => {
             </button>
           </div>
         </div>
+        <Transition
+          show={isShowing}
+          enter="transition-opacity duration-75"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-150"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <fieldset>
+            <div className="flex-auto py-3">
+              <label className="text-[#334155] mx-auto flex-auto">
+                Status da Reserva
+              </label>
+              <div>
+                <Select options={selectOptions} />
+              </div>
+              <p className="helper-info mt-1 mb-0 text-[#64748b] text-sm">
+                Use o filtro para encontrar mais rápido as reservas
+              </p>
+            </div>
+            <div className="flex-auto py-4">
+              <label className="text-[#334155] mx-auto flex-auto">
+                Filtro da pesquisa
+              </label>
+              <div>
+                <Select options={selectOptions} />
+              </div>
+              <p className="helper-info mt-1 mb-0 text-[#64748b] text-sm">
+                Use esse filtro para ser específico na pesquisa
+              </p>
+            </div>
+          </fieldset>
+        </Transition>
       </div>
     </>
   )

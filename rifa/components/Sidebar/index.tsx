@@ -202,19 +202,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }`}
                 >
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    height="20"
-                    width="20"
+                    fill="#4b5563"
+                    width="20px"
+                    height="20px"
                     viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="ml-1 pl-0"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                    <path d="M22,12H16.333V10a1,1,0,0,0-1-1H8.667a1,1,0,0,0-1,1v5H2a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V13A1,1,0,0,0,22,12ZM7.667,21H3V17H7.667Zm6.666-8v8H9.667V11h4.666ZM21,21H16.333V14H21ZM15,3.292,13.333,4.667,13.854,7,12,5.667,10.146,7l.521-2.333L9,3.292,11,3l1-2,1,2Z" />
                   </svg>
-                  Afiliados
+                  Ganhadores
                 </Link>
               </li>
               {/* <!-- Menu Item Tables --> */}
