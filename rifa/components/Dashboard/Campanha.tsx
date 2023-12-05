@@ -1,12 +1,22 @@
 'use client'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaTriangleExclamation, FaTicket, FaFaceSadCry } from 'react-icons/fa6'
 import { Select } from '../Select/Select'
+import { Raffle, RaffleService } from '@/services/Raffle.service'
 
 const Campanha: React.FC = () => {
   const [hasPayment, setHasPayment] = React.useState(true)
-  const [raffles, setRaffles] = React.useState([])
+  const [raffles, setRaffles] = React.useState<Raffle[]>([])
+
+  const getRaffles = async () => {
+    const response = await RaffleService.list()
+    setRaffles(response.data.history)
+  }
+
+  useEffect(() => {
+    getRaffles()
+  }, [])
   return (
     <div className="container mx-auto mt-6">
       <h2 className="text-xl sm:text-xl font-light flex gap-2">
@@ -15,6 +25,17 @@ const Campanha: React.FC = () => {
           <span className="font-medium">Aleks</span>!
         </span>
       </h2>
+      {raffles.length > 0 && (
+        <div className="flex sm:block justify-center">
+          <a
+            className="py-2 px-6 border inline-flex bg-white gap-2 items-center mt-6 rounded-lg shadow-sm text-sm font-medium"
+            href="/raffles/create"
+          >
+            <FaTicket size="20" color="rgb(83 102 8)" />
+            CRIAR CAMPANHA{' '}
+          </a>
+        </div>
+      )}
       {!hasPayment ? (
         <div className="bg-black-2 rounded-lg text-lg text-white mt-14 font-medium ">
           <Link
@@ -31,17 +52,7 @@ const Campanha: React.FC = () => {
             </span>
           </Link>
         </div>
-      ) : (
-        <div className="flex sm:block justify-center">
-          <a
-            className="py-2 px-6 border inline-flex bg-white gap-2 items-center mt-6 rounded-lg shadow-sm text-sm font-medium"
-            href="/raffles/create"
-          >
-            <FaTicket size="20" color="rgb(83 102 8)" />
-            CRIAR CAMPANHA{' '}
-          </a>
-        </div>
-      )}
+      ) : null}
       <h2 className="mt-4 text-xl flex gap-2 items-center text-zinc-800">
         <FaTicket size="24px" color="#536654" /> Minhas campanhas
       </h2>
@@ -60,7 +71,7 @@ const Campanha: React.FC = () => {
         />
       </div>
       {raffles.length > 0 ? (
-        raffles.map((raffle) => <h1 key={raffle}>Ola</h1>)
+        raffles.map((raffle) => <h1 key={raffle.id}>Ola</h1>)
       ) : (
         <div className="max-w-full rounded-xl mt-6 overflow-hidden shadow-lg bg-white">
           <div className="px-10 py-6">

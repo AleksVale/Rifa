@@ -16,6 +16,7 @@
     "@types/node": "20.4.8",
     "apexcharts": "^3.41.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.6.2",
     "eslint-config-next": "13.4.12",
     "jsvectormap": "^1.5.3",
     "next": "13.4.12",
