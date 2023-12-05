@@ -71,7 +71,7 @@ const Campanha: React.FC = () => {
         />
       </div>
       {raffles.length > 0 ? (
-        raffles.map((raffle) => <h1 key={raffle.id}>Ola</h1>)
+        raffles.map((raffle) => <h1 key={raffle.id}>{raffle.name}</h1>)
       ) : (
         <div className="max-w-full rounded-xl mt-6 overflow-hidden shadow-lg bg-white">
           <div className="px-10 py-6">
