@@ -11,8 +11,9 @@ const Campanha: React.FC = () => {
 
   const getRaffles = async () => {
     const response = await RaffleService.list()
-    setRaffles(response.data.history)
+    setRaffles(response.data)
   }
+  console.log(raffles)
 
   useEffect(() => {
     getRaffles()

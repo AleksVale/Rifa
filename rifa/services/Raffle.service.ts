@@ -6,12 +6,9 @@ export interface Raffle {
   tickets: string
   createdAt: string
 }
-export interface GameResponse {
-  history: Raffle[]
-}
 
 export class RaffleService {
   static async list() {
-    return await http.get<GameResponse>('/raffles')
+    return await http.get<Raffle[]>('raffles')
   }
 }
