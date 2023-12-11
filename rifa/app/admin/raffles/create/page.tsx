@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import InputLabel from '@/components/Input'
 import { Select } from '@/components/Select/Select'
 import CurrencyInput from 'react-currency-input-field'
+import { RaffleService } from '@/services/Raffle.service'
 
 const schema = z.object({
   name: z
@@ -14,22 +15,28 @@ const schema = z.object({
     .min(3, { message: 'Name must be at least 3 characters long' }),
   quantityTickets: z.string(),
   valueTicket: z.number().min(0.1, { message: 'Value must be at least 0.1' }),
+  sortDate: z.string(),
 })
 
-type Inputs = z.infer<typeof schema>
+export type CreateRaffleInput = z.infer<typeof schema>
 const CreateRaffle: React.FC = () => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<CreateRaffleInput>({
     resolver: zodResolver(schema),
   })
-  console.log(errors) // watch input value by passing the name of it
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // TODO chamar api para criar campanha e redirecionar para a página da campanha editando
+  const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
+    console.log('aqui', data)
+    const raffle = {
+      name: data.name,
+      ticketLimit: Number(data.quantityTickets.split(' ')[0]),
+      price: data.valueTicket,
+    }
+    const response = await RaffleService.create(raffle)
+    console.log(response)
   }
 
   return (
@@ -72,19 +79,17 @@ const CreateRaffle: React.FC = () => {
                   { id: '8', label: '600 bilhetes - (000 à 599)' },
                   // Pula de 1000 em 1000 até 6000
                   { id: '9', label: '1000 bilhetes - (0000 à 0999)' },
-                  { id: '10', label: '2000 bilhetes - (1000 à 1999)' },
-                  { id: '11', label: '3000 bilhetes - (2000 à 2999)' },
-                  { id: '12', label: '4000 bilhetes - (3000 à 3999)' },
-                  { id: '13', label: '5000 bilhetes - (4000 à 4999)' },
-                  { id: '14', label: '6000 bilhetes - (5000 à 5999)' },
-                  // Pula de 10000 em 10000 até 30000
-                  { id: '15', label: '10000 bilhetes - (6000 à 15999)' },
-                  { id: '16', label: '20000 bilhetes - (16000 à 25999)' },
-                  { id: '17', label: '30000 bilhetes - (26000 à 35999)' },
-                  // Pula de 10000 em 10000 até 100000
-                  { id: '18', label: '50000 bilhetes - (36000 à 85999)' },
-                  { id: '19', label: '100000 bilhetes - (86000 à 185999)' },
-                  { id: '28', label: '1000000 bilhetes - (1786000 à 1985999)' },
+                  { id: '10', label: '2000 bilhetes - (0000 à 1999)' },
+                  { id: '11', label: '3000 bilhetes - (0000 à 2999)' },
+                  { id: '12', label: '4000 bilhetes - (0000 à 3999)' },
+                  { id: '13', label: '5000 bilhetes - (0000 à 4999)' },
+                  { id: '14', label: '6000 bilhetes - (0000 à 5999)' },
+                  { id: '15', label: '10000 bilhetes - (0000 à 15999)' },
+                  { id: '16', label: '20000 bilhetes - (00000 à 25999)' },
+                  { id: '17', label: '30000 bilhetes - (00000 à 35999)' },
+                  { id: '18', label: '50000 bilhetes - (00000 à 85999)' },
+                  { id: '19', label: '100000 bilhetes - (00000 à 185999)' },
+                  { id: '28', label: '1000000 bilhetes - (0000000 à 1985999)' },
                 ]}
               />
             )}

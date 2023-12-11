@@ -13,8 +13,6 @@ const Campanha: React.FC = () => {
     const response = await RaffleService.list()
     setRaffles(response.data)
   }
-  console.log(raffles)
-
   useEffect(() => {
     getRaffles()
   }, [])
@@ -30,7 +28,7 @@ const Campanha: React.FC = () => {
         <div className="flex sm:block justify-center">
           <a
             className="py-2 px-6 border inline-flex bg-white gap-2 items-center mt-6 rounded-lg shadow-sm text-sm font-medium"
-            href="/raffles/create"
+            href="admin/raffles/create"
           >
             <FaTicket size="20" color="rgb(83 102 8)" />
             CRIAR CAMPANHA{' '}
