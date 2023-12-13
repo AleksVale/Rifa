@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Switch } from '@headlessui/react'
 
-export default function Toggle() {
-  const [enabled, setEnabled] = useState(false)
+interface ToggleProps {
+  enabled: boolean
+  setEnabled: (enabled: boolean) => void
+}
 
+export default function Toggle({ enabled, setEnabled }: ToggleProps) {
   return (
     <div className="flex items-center py-3">
       <Switch

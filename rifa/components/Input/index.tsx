@@ -1,4 +1,10 @@
 import React from 'react'
+import { FaCartFlatbed, FaShoePrints } from 'react-icons/fa6'
+
+const iconTypes = {
+  cart: <FaCartFlatbed />,
+  flamb: <FaShoePrints />,
+}
 
 interface InputProps {
   register: any
@@ -6,11 +12,12 @@ interface InputProps {
   label: string
   name: string
   placeholder: string
+  icon?: keyof typeof iconTypes
 }
 
 const InputLabel = React.forwardRef(
   (
-    { register, errors, label, name, placeholder }: Readonly<InputProps>,
+    { register, errors, label, name, placeholder, icon }: Readonly<InputProps>,
     ref,
   ) => (
     <div>
@@ -20,14 +27,21 @@ const InputLabel = React.forwardRef(
       >
         {label}
       </label>
-      <input
-        {...register(name)}
-        name={name}
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-green-300"
-        id={name}
-        type="text"
-        placeholder={placeholder}
-      />
+      <div className="flex items-center">
+        {icon && (
+          <div className="bg-slate-300 py-3 px-3 border-r border-red-300">
+            {iconTypes[icon]}
+          </div>
+        )}
+        <input
+          {...register(name)}
+          name={name}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-green-300"
+          id={name}
+          type="text"
+          placeholder={placeholder}
+        />
+      </div>
       {errors[name] && (
         <p className="text-red-500 text-sm">Esse campo é obrigatório</p>
       )}

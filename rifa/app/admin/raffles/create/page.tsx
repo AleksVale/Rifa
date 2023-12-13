@@ -29,7 +29,6 @@ const CreateRaffle: React.FC = () => {
     resolver: zodResolver(schema),
   })
   const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
-    console.log('aqui', data)
     const raffle = {
       name: data.name,
       ticketLimit: Number(data.quantityTickets.split(' ')[0]),
