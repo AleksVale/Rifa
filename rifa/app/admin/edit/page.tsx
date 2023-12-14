@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { DateCalendar } from '@/components/Date/Date'
 import Toggle from '@/components/Toggle/Toggle'
 import MyModal from '@/components/Mydialog/MyDialog'
-
+import MyModalInput from '@/components/Mydialoginput/MyDialogInput'
 export const metadata: Metadata = {
   title: 'Login',
   description: 'This is the login page',
@@ -132,7 +132,7 @@ const Edit = () => {
               />
             </div>
             <label className="label">
-              Data de sorteio{' '}
+              Tempo para Pagamento{' '}
               <div className="inline-block mt-3">
                 <div>
                   <svg
@@ -193,7 +193,9 @@ const Edit = () => {
                 },
               ]}
             />
+
             <MyModal />
+            <MyModalInput />
           </div>
         </form>
       </div>

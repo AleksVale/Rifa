@@ -1,10 +1,18 @@
 import React from 'react'
-import { FaGift, FaCartFlatbed, FaShoePrints } from 'react-icons/fa6'
+import {
+  FaGift,
+  FaCartFlatbed,
+  FaShoePrints,
+  FaTicket,
+  FaDollarSign,
+} from 'react-icons/fa6'
 
 const iconTypes = {
   cart: <FaCartFlatbed />,
   flamb: <FaShoePrints />,
   gift: <FaGift />,
+  money: <FaDollarSign />,
+  ticket: <FaTicket />,
 }
 
 interface InputProps {

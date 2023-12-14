@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react'
 import InputLabel from '../Input'
 import { useForm } from 'react-hook-form'
 
-export default function MyModal() {
+export default function MyModalInput() {
   const [isOpen, setIsOpen] = useState(false)
   const { register } = useForm()
   const [inputCount, setInputCount] = useState(1)
@@ -44,7 +44,7 @@ export default function MyModal() {
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"
+              d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
             />
           </svg>
           Editar Prêmios
@@ -82,7 +82,7 @@ export default function MyModal() {
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
                     <div className="flex justify-between">
-                      Prêmios da campanha!
+                      Promoções da sua campanha!
                       <button type="button" onClick={closeModal}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +105,7 @@ export default function MyModal() {
                   <div className="min-h-full justify-start p-4 text-center">
                     {Array.from({ length: inputCount }).map((_, i) => (
                       <div key={i}>
-                        <label className="label mb-0 flex justify-start">{`Prêmio ${
+                        <label className="label mb-0 flex justify-start">{`Promoção ${
                           i + 1
                         }`}</label>
                         <InputLabel
@@ -113,9 +113,18 @@ export default function MyModal() {
                           register={register}
                           errors={Error}
                           label=""
-                          name={`Premio${i + 1}`}
-                          placeholder="Informe o prêmio"
-                          icon="gift"
+                          name={`Promoção${i + 1}`}
+                          placeholder="Quantidades de bilhetes"
+                          icon="ticket"
+                        />
+                        <InputLabel
+                          key={i}
+                          register={register}
+                          errors={Error}
+                          label=""
+                          name={`Promoção${i + 1}`}
+                          placeholder="Valor da promoção"
+                          icon="money"
                         />
                       </div>
                     ))}
