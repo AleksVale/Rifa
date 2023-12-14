@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import Image from 'next/image'
 import { DateCalendar } from '@/components/Date/Date'
 import Toggle from '@/components/Toggle/Toggle'
+import MyModal from '@/components/Mydialog/MyDialog'
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -192,6 +193,7 @@ const Edit = () => {
                 },
               ]}
             />
+            <MyModal />
           </div>
         </form>
       </div>
