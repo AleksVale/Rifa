@@ -9,38 +9,25 @@ import { Select } from '@/components/Select/Select'
 import CurrencyInput from 'react-currency-input-field'
 import { RaffleService } from '@/services/Raffle.service'
 import { useParams } from 'next/navigation'
-
-const selectOptions = [
-  { id: '1', label: '25 bilhetes - (00 à 24)' },
-  { id: '2', label: '50 bilhetes - (00 à 49)' },
-  { id: '3', label: '100 bilhetes - (00 à 99)' },
-  { id: '4', label: '200 bilhetes - (000 à 199)' },
-  { id: '5', label: '300 bilhetes - (000 à 299)' },
-  { id: '6', label: '400 bilhetes - (000 à 399)' },
-  { id: '7', label: '500 bilhetes - (000 à 499)' },
-  { id: '8', label: '600 bilhetes - (000 à 599)' },
-  // Pula de 1000 em 1000 até 6000
-  { id: '9', label: '1000 bilhetes - (0000 à 0999)' },
-  { id: '10', label: '2000 bilhetes - (0000 à 1999)' },
-  { id: '11', label: '3000 bilhetes - (0000 à 2999)' },
-  { id: '12', label: '4000 bilhetes - (0000 à 3999)' },
-  { id: '13', label: '5000 bilhetes - (0000 à 4999)' },
-  { id: '14', label: '6000 bilhetes - (0000 à 5999)' },
-  { id: '15', label: '10000 bilhetes - (0000 à 15999)' },
-  { id: '16', label: '20000 bilhetes - (00000 à 25999)' },
-  { id: '17', label: '30000 bilhetes - (00000 à 35999)' },
-  { id: '18', label: '50000 bilhetes - (00000 à 85999)' },
-  { id: '19', label: '100000 bilhetes - (00000 à 185999)' },
-  { id: '28', label: '1000000 bilhetes - (0000000 à 1985999)' },
-]
+import Toggle from '@/components/Toggle/Toggle'
+import { DateCalendar } from '@/components/Date/Date'
+import Image from 'next/image'
+import MyModal from '@/components/Mydialog/MyDialog'
+import MyModalInput from '@/components/Mydialoginput/MyDialogInput'
+import dayjs from 'dayjs'
 
 const schema = z.object({
   name: z
     .string()
     .min(3, { message: 'Name must be at least 3 characters long' }),
-  quantityTickets: z.string(),
-  valueTicket: z.number().min(0.1, { message: 'Value must be at least 0.1' }),
-  sortDate: z.string(),
+  description: z
+    .string()
+    .min(3, { message: 'Description must be at least 3 characters long' }),
+  minTickets: z.number().min(1, { message: 'Min tickets must be at least 1' }),
+  maxTickets: z.number().min(1, { message: 'Max tickets must be at least 1' }),
+  timeToPay: z.string().min(1, { message: 'Time to pay must be at least 1' }),
+  sortDay: z.any(),
+  hasSortDay: z.boolean(),
 })
 
 export type CreateRaffleInput = z.infer<typeof schema>
@@ -50,35 +37,30 @@ const EditRaffle: React.FC = () => {
     reset,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<CreateRaffleInput>({
     resolver: zodResolver(schema),
   })
 
+  const watchName = watch('name', 'Carregando')
+
+  const watchHasSortDay = watch('hasSortDay', false)
+
   const { id } = useParams()
 
-  console.log(id)
   const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
     const raffle = {
       name: data.name,
-      ticketLimit: Number(data.quantityTickets.split(' ')[0]),
-      price: data.valueTicket,
     }
-    const response = await RaffleService.create(raffle)
-    console.log(response)
+    // const response = await RaffleService.create(raffle)
   }
 
   const getRaffle = useCallback(async () => {
     const response = await RaffleService.get(id as string)
-    const quantity = selectOptions.find(
-      (item) =>
-        item.label.split(' ')[0] === response.data.ticketLimit.toString(),
-    )?.label
-
+    console.log(response)
     reset({
-      ...response.data,
-      quantityTickets: quantity,
-      valueTicket: response.data.price,
+      ...response,
     })
   }, [id, reset])
 
@@ -90,73 +72,187 @@ const EditRaffle: React.FC = () => {
     <div className="flex-grow">
       <div className="py-8 px-4 sm:px-8 container">
         <h1 className="font-bold text-2xl sm:text-3xl flex items-center gap-2">
-          <FaTicket size="40" /> <span className="ml-1">Editando: </span>
+          <FaTicket size="40" />{' '}
+          <span className="ml-1">Editando: {watchName} </span>
         </h1>
       </div>
-      <form className="px-4 sm:px-8" onSubmit={handleSubmit(onSubmit)}>
+      <form className="mt-8" onSubmit={handleSubmit(onSubmit)}>
         <InputLabel
-          errors={errors}
           register={register}
-          label="Nome da campanha"
+          errors={errors}
+          label="Nome"
           name="name"
-          placeholder="Nome da sua campanha"
+          placeholder="Sorteio"
         />
-        <div>
-          <label
-            className="block text-gray-700 text-sm font-bold mb-1 mt-3"
-            htmlFor={'quantityTickets'}
-          >
-            Quantidade de bilhetes
+        <div className="mt-8">
+          <div className="flex align-center justify-center items-center border-2 border-gray-300 rounded-lg mt-6 p-2">
+            <Image
+              src="/images/gif/gif.gif"
+              alt="✅ Sistema escolhe os bilhetes"
+              width={200}
+              height={50}
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="description">
+              Descrição / Regulamento{' '}
+              <div className="inline-block">
+                <div className="mt-6">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                    className="h-4 translate-y-[20%] text-gray-4 00"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div>
+            <textarea
+              id="description"
+              className="w-full border-2 border-gray-300 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 h-20 overflow-auto"
+              placeholder="Insira o texto aqui..."
+              {...register('description')}
+            ></textarea>
+          </div>
+          <div className="flex gap-1">
+            <label className="label">Imagens</label>
+            <div className="inline-flex items-center px-2 py-0.5 default-radius text-xs font-medium bg-green-100 text-green-800">
+              <b className="mr-1">Tamanho recomendado: </b> 1365x758 pixels{' '}
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-1 mt-3 border-2 border-gray-300 rounded-md p-2">
+              Imagem
+              <input
+                type="file"
+                accept="image/*"
+                className="text-sm text-gray-500 file:mr-5 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:cursor-pointer hover:file:bg-blue-100"
+              />
+            </label>
+          </div>
+          <div className="flex space-x-7">
+            <InputLabel
+              register={register}
+              errors={errors}
+              label="Quantidade minima de bilhetes por compra"
+              name="minTickets"
+              placeholder="1"
+              icon="cart"
+            />
+
+            <InputLabel
+              register={register}
+              errors={errors}
+              label="Quantidade maxima de bilhetes por compra"
+              name="maxTickets"
+              placeholder="300"
+              icon="cart"
+            />
+          </div>
+          <label className="label">
+            Data do sorteio
+            <div className="inline-block mt-3">
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  className="h-4 translate-y-[20%] text-gray-4 00"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </label>
+          {watchHasSortDay && (
+            <Controller
+              name={'sortDay'}
+              control={control}
+              render={({ field }) => (
+                <DateCalendar value={dayjs(field.value)} shouldDisablePast />
+              )}
+            />
+          )}
+
+          <Controller
+            name={'hasSortDay'}
+            control={control}
+            render={({ field }) => (
+              <Toggle
+                enabled={field.value}
+                setEnabled={(enabled) => {
+                  field.onChange(enabled) // Atualiza o valor do campo controlado
+                }}
+              />
+            )}
+          />
+          <label className="label">
+            Tempo para Pagamento
+            <div className="inline-block mt-2">
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  className="h-4 translate-y-[20%] text-gray-4 00"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
           </label>
           <Controller
-            name="quantityTickets"
+            name="timeToPay"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
-                onChange={(value) => field.onChange(value)}
-                options={selectOptions}
+                options={[
+                  {
+                    id: '25',
+                    label: ' 1 hora',
+                  },
+                  {
+                    id: '26',
+                    label: '3 horas',
+                  },
+                  {
+                    id: '27',
+                    label: '1 dia',
+                  },
+                ]}
               />
             )}
           />
+
+          <MyModal />
+          <MyModalInput />
         </div>
-        <div>
-          <label
-            className="block text-gray-700 text-sm font-bold mb-1 mt-3"
-            htmlFor={'valueTicket'}
-          >
-            Valor do bilhete
-          </label>
-          <Controller
-            name="valueTicket"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <CurrencyInput
-                id="valueTicket"
-                name="valueTicket"
-                placeholder="Valor do bilhete"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                defaultValue={0.4}
-                value={field.value}
-                decimalsLimit={2}
-                onValueChange={(value, name, values) =>
-                  field.onChange(values?.float)
-                }
-                intlConfig={{ locale: 'pt-BR', currency: 'BRL' }}
-              />
-            )}
-          />
-        </div>
-        <button
-          className="flex items-center mt-8 bg-green-400 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          type="submit"
-        >
-          <div className=" flex gap-2 items-center w-full text-sm">
-            {' '}
-            Prosseguir <FaArrowRightLong />
-          </div>
-        </button>
       </form>
     </div>
   )

@@ -1,22 +1,29 @@
-import React, { useState } from 'react'
-import Datetime from 'react-datetime'
-import moment from 'moment'
-import 'moment/locale/pt-br'
+import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from 'dayjs'
 
-import 'react-datetime/css/react-datetime.css'
+import 'dayjs/locale/pt-br'
 
 interface CalendarProps {
-  showCalendar: boolean
+  value: Date | dayjs.Dayjs
+  shouldDisableFuture?: boolean
+  shouldDisablePast?: boolean
 }
 
-export function DateCalendar({ showCalendar }: CalendarProps) {
+export function DateCalendar({
+  value,
+  shouldDisableFuture = false,
+  shouldDisablePast = false,
+}: CalendarProps) {
   return (
-    <div className="flex items-center mt-2">
-      <Datetime
-        open={showCalendar}
-        locale="pt-BR"
-        className="w-60 shadow border rounded py-3 px-2 text-gray-darker"
-      />
-    </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+      <div>
+        <DateTimePicker
+          value={dayjs(value)}
+          disableFuture={shouldDisableFuture}
+          disablePast={shouldDisablePast}
+        />
+      </div>
+    </LocalizationProvider>
   )
 }

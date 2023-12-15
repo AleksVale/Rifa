@@ -27,6 +27,6 @@ export class RaffleService {
   }
 
   static async get(id: string) {
-    return await http.get<Raffle>(`raffles/${id}`)
+    return (await http.get<Raffle>(`raffles/${id}`)).data
   }
 }
