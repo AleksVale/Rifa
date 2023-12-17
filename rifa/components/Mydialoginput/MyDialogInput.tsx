@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import {
   useForm,
   useFieldArray,
@@ -40,11 +40,13 @@ interface PromotionProps {
 }
 
 export default function PromotionModal({ items, onSave }: PromotionProps) {
+  console.log(items)
   const [isOpen, setIsOpen] = useState(false)
   const {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -79,6 +81,17 @@ export default function PromotionModal({ items, onSave }: PromotionProps) {
   const removePromotion = (index: number) => {
     remove(index)
   }
+
+  useEffect(() => {
+    if (items?.length) {
+      reset({
+        promotions: items.map((item) => ({
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      })
+    }
+  }, [items, reset])
 
   return (
     <>

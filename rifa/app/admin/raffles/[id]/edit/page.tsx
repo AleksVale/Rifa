@@ -93,6 +93,10 @@ const EditRaffle: React.FC = () => {
     getRaffle()
   }, [getRaffle])
 
+  const updatePromotions = (promotions: any, field: any) => {
+    field.onChange(promotions)
+  }
+
   return (
     <div className="flex-grow">
       <div className="py-8 px-4 sm:px-8 container">
@@ -304,7 +308,7 @@ const EditRaffle: React.FC = () => {
             render={({ field }) => (
               <PromotionModal
                 items={field.value}
-                onSave={(promotions) => field.onChange(promotions)}
+                onSave={(promotions) => updatePromotions(promotions, field)}
               />
             )}
           />
