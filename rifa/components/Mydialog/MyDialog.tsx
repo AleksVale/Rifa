@@ -27,7 +27,7 @@ export default function MyModal() {
 
   return (
     <>
-      <div className="flex items-center justify-start mt-2">
+      <div className="flex items-center justify-center mt-2 w-screen">
         <button
           type="button"
           onClick={openModal}
@@ -102,7 +102,7 @@ export default function MyModal() {
                     </div>
                   </Dialog.Title>
 
-                  <div className="min-h-full justify-start p-4 text-center">
+                  <div className="min-h-full justify-start p-4 text-center space-y-4">
                     {Array.from({ length: inputCount }).map((_, i) => (
                       <div key={i}>
                         <label className="label mb-0 flex justify-start">{`Prêmio ${
@@ -121,7 +121,7 @@ export default function MyModal() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex justify-between">
+                  <div className="mt-4 flex space-x-4">
                     <button
                       type="button"
                       onClick={addInput}

@@ -27,7 +27,7 @@ export default function MyModalInput() {
 
   return (
     <>
-      <div className="flex items-center justify-start mt-2">
+      <div className="flex items-center justify-start mt-2 w-screen">
         <button
           type="button"
           onClick={openModal}
@@ -47,7 +47,7 @@ export default function MyModalInput() {
               d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
             />
           </svg>
-          Editar Prêmios
+          Editar Promoções
         </button>
       </div>
 
@@ -102,7 +102,7 @@ export default function MyModalInput() {
                     </div>
                   </Dialog.Title>
 
-                  <div className="min-h-full justify-start p-4 text-center">
+                  <div className="min-h-full justify-start p-4 text-center space-y-4">
                     {Array.from({ length: inputCount }).map((_, i) => (
                       <div key={i}>
                         <label className="label mb-0 flex justify-start">{`Promoção ${
@@ -130,11 +130,11 @@ export default function MyModalInput() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex justify-between">
+                  <div className="mt-4 flex space-x-4">
                     <button
                       type="button"
                       onClick={addInput}
-                      className=" flex-auto items-center justify-end border-2 border-green-500 text-white bg-green-500 rounded-md text-sm text-center w-36 h-8 "
+                      className="flex-auto items-center justify-end border-2 border-green-500 text-white bg-green-500 rounded-md text-sm text-center w-36 h-8"
                     >
                       <div className="w-full flex justify-between items-center">
                         Adicionar Prêmio
@@ -159,7 +159,7 @@ export default function MyModalInput() {
                     <button
                       type="button"
                       onClick={removeInput}
-                      className="flex-auto justify-end border-2 border-red-500 text-white bg-red-500 rounded-md text-sm text-center w-36  h-8"
+                      className="flex-auto justify-end border-2 border-red-500 text-white bg-red-500 rounded-md text-sm text-center w-36 h-8"
                     >
                       <div className="w-full flex justify-between items-center">
                         Excluir prêmio

@@ -193,9 +193,10 @@ const Edit = () => {
                 },
               ]}
             />
-
-            <MyModal />
-            <MyModalInput />
+            <div className="flex justify-center items-center space-x-4">
+              <MyModal />
+              <MyModalInput />
+            </div>
           </div>
         </form>
       </div>
