@@ -12,7 +12,7 @@ import Toggle from '@/components/Toggle/Toggle'
 import { DateCalendar } from '@/components/Date/Date'
 import Image from 'next/image'
 import MyModal from '@/components/Mydialog/MyDialog'
-import MyModalInput from '@/components/Mydialoginput/MyDialogInput'
+import PromotionModal from '@/components/Mydialoginput/MyDialogInput'
 import dayjs from 'dayjs'
 
 const schema = z.object({
@@ -28,6 +28,12 @@ const schema = z.object({
   drawingDate: z.any(),
   hasSortDay: z.boolean(),
   showRanking: z.boolean(),
+  promotions: z.array(
+    z.object({
+      quantity: z.number().min(1, { message: 'Quantity must be at least 1' }),
+      price: z.number().min(1, { message: 'Value must be at least 1' }),
+    }),
+  ),
 })
 
 export type CreateRaffleInput = z.infer<typeof schema>
@@ -79,6 +85,7 @@ const EditRaffle: React.FC = () => {
       maxTickets: response.maxTickets ?? 300,
       timeToPay: response.timeToPay ?? '1 hora',
       showRanking: response.showRanking ?? false,
+      promotions: response.Promotion ?? [],
     })
   }, [id, reset])
 
@@ -290,7 +297,17 @@ const EditRaffle: React.FC = () => {
             )}
           />
           <MyModal />
-          <MyModalInput />
+
+          <Controller
+            name="promotions"
+            control={control}
+            render={({ field }) => (
+              <PromotionModal
+                items={field.value}
+                onSave={(promotions) => field.onChange(promotions)}
+              />
+            )}
+          />
         </div>
 
         <button

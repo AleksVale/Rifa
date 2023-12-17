@@ -25,42 +25,40 @@ export default function RootLayout({
   }, [])
 
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true} className={inter.className}>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? (
-            <Loader />
-          ) : (
-            <div className="flex h-screen overflow-hidden">
-              {/* <!-- ===== Sidebar Start ===== --> */}
-              <Sidebar
+    <div suppressHydrationWarning={true} className={inter.className}>
+      <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        {loading ? (
+          <Loader />
+        ) : (
+          <div className="flex h-screen overflow-hidden">
+            {/* <!-- ===== Sidebar Start ===== --> */}
+            <Sidebar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+            {/* <!-- ===== Sidebar End ===== --> */}
+
+            {/* <!-- ===== Content Area Start ===== --> */}
+            <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+              {/* <!-- ===== Header Start ===== --> */}
+              <Header
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
-              {/* <!-- ===== Sidebar End ===== --> */}
+              {/* <!-- ===== Header End ===== --> */}
 
-              {/* <!-- ===== Content Area Start ===== --> */}
-              <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-                {/* <!-- ===== Header Start ===== --> */}
-                <Header
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-                {/* <!-- ===== Header End ===== --> */}
-
-                {/* <!-- ===== Main Content Start ===== --> */}
-                <main>
-                  <div className="mx-auto text-slate-900 max-w-screen-2xl p-6 md:p-8 2xl:p-12">
-                    {children}
-                  </div>
-                </main>
-                {/* <!-- ===== Main Content End ===== --> */}
-              </div>
-              {/* <!-- ===== Content Area End ===== --> */}
+              {/* <!-- ===== Main Content Start ===== --> */}
+              <main>
+                <div className="mx-auto text-slate-900 max-w-screen-2xl p-6 md:p-8 2xl:p-12">
+                  {children}
+                </div>
+              </main>
+              {/* <!-- ===== Main Content End ===== --> */}
             </div>
-          )}
-        </div>
-      </body>
-    </html>
+            {/* <!-- ===== Content Area End ===== --> */}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

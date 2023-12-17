@@ -8,6 +8,7 @@ import { Raffle, RaffleService } from '@/services/Raffle.service'
 const Campanha: React.FC = () => {
   const [hasPayment, setHasPayment] = React.useState(true)
   const [raffles, setRaffles] = React.useState<Raffle[]>([])
+  const [raffleStatus, setRaffleStatus] = React.useState('Em andamento')
 
   const getRaffles = async () => {
     const response = await RaffleService.list()
@@ -60,6 +61,8 @@ const Campanha: React.FC = () => {
       </p>
       <div className="pt-2">
         <Select
+          value={raffleStatus}
+          onChange={(value) => setRaffleStatus(value)}
           options={[
             {
               id: 'andamento',
