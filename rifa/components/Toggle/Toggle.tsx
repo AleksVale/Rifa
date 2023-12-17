@@ -4,9 +4,10 @@ import { Switch } from '@headlessui/react'
 interface ToggleProps {
   enabled: boolean
   setEnabled: (enabled: boolean) => void
+  label?: string
 }
 
-export default function Toggle({ enabled, setEnabled }: ToggleProps) {
+export default function Toggle({ enabled, setEnabled, label }: ToggleProps) {
   return (
     <div className="flex items-center py-3">
       <Switch
@@ -22,7 +23,7 @@ export default function Toggle({ enabled, setEnabled }: ToggleProps) {
             pointer-events-none inline-block h-[24px] w-[24px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
         />
       </Switch>
-      <p className="font-medium text-xs px-2">INFORMAR DATA</p>
+      {label && <p className="font-medium text-xs px-2">{label}</p>}
     </div>
   )
 }

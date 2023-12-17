@@ -8,12 +8,14 @@ interface CalendarProps {
   value: Date | dayjs.Dayjs
   shouldDisableFuture?: boolean
   shouldDisablePast?: boolean
+  handleChange: (value: dayjs.Dayjs | null) => void
 }
 
 export function DateCalendar({
   value,
   shouldDisableFuture = false,
   shouldDisablePast = false,
+  handleChange,
 }: CalendarProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
@@ -22,6 +24,7 @@ export function DateCalendar({
           value={dayjs(value)}
           disableFuture={shouldDisableFuture}
           disablePast={shouldDisablePast}
+          onChange={(value) => handleChange(value)}
         />
       </div>
     </LocalizationProvider>

@@ -10,15 +10,11 @@ interface Option {
 interface Props {
   options: Option[]
   onChange?: (option: string) => void
+  value: string
 }
 
-export function Select({ options, onChange }: Props) {
-  const [selectedPerson, setSelectedPerson] = useState('Selecione uma opção')
-
+export function Select({ options, onChange, value }: Props) {
   const handleSelectOptions = (option: string) => {
-    setSelectedPerson(
-      options.find((item) => item.label === option)?.label ?? options[0].label,
-    )
     onChange?.(option)
   }
 
@@ -28,14 +24,14 @@ export function Select({ options, onChange }: Props) {
         <Listbox
           as="div"
           className="space-y-1"
-          value={selectedPerson}
+          value={value}
           onChange={handleSelectOptions}
         >
           {({ open }) => (
             <div className="relative">
               <span className="inline-block w-full rounded-md shadow-sm">
                 <Listbox.Button className="cursor-pointer relative w-full rounded-md border border-gray-300 bg-white pl-3 pr-10 lg:py-[10px] py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5 hover:bg-slate-100">
-                  <span className="block truncate">{selectedPerson}</span>
+                  <span className="block truncate">{value}</span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <svg
                       className="h-5 w-5 text-gray-400"

@@ -1,14 +1,13 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { FaTicket, FaArrowRightLong } from 'react-icons/fa6'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import InputLabel from '@/components/Input'
 import { Select } from '@/components/Select/Select'
-import CurrencyInput from 'react-currency-input-field'
 import { RaffleService } from '@/services/Raffle.service'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Toggle from '@/components/Toggle/Toggle'
 import { DateCalendar } from '@/components/Date/Date'
 import Image from 'next/image'
@@ -26,8 +25,9 @@ const schema = z.object({
   minTickets: z.number().min(1, { message: 'Min tickets must be at least 1' }),
   maxTickets: z.number().min(1, { message: 'Max tickets must be at least 1' }),
   timeToPay: z.string().min(1, { message: 'Time to pay must be at least 1' }),
-  sortDay: z.any(),
+  drawingDate: z.any(),
   hasSortDay: z.boolean(),
+  showRanking: z.boolean(),
 })
 
 export type CreateRaffleInput = z.infer<typeof schema>
@@ -49,18 +49,36 @@ const EditRaffle: React.FC = () => {
 
   const { id } = useParams()
 
+  const router = useRouter()
+
   const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
+    const conteudoHTML = data.description
+      .split('\n')
+      .map((line) => `<p>${line}</p>`)
+      .join('')
+    const { hasSortDay, ...raffles } = data
     const raffle = {
-      name: data.name,
+      ...raffles,
+      description: conteudoHTML,
+      drawingDate: data.hasSortDay ? data.drawingDate.toDate() : null,
     }
-    // const response = await RaffleService.create(raffle)
+    console.log(raffle)
+    const response = await RaffleService.update(raffle, id as string)
+    console.log(response)
+    response.success && router.push('/admin')
   }
 
   const getRaffle = useCallback(async () => {
     const response = await RaffleService.get(id as string)
-    console.log(response)
     reset({
       ...response,
+      hasSortDay: !!response.drawingDate,
+      description:
+        response.description?.replace(/<p>/g, '').replace(/<\/p>/g, '\n') ?? '',
+      minTickets: response.minTickets ?? 1,
+      maxTickets: response.maxTickets ?? 300,
+      timeToPay: response.timeToPay ?? '1 hora',
+      showRanking: response.showRanking ?? false,
     })
   }, [id, reset])
 
@@ -184,10 +202,14 @@ const EditRaffle: React.FC = () => {
           </label>
           {watchHasSortDay && (
             <Controller
-              name={'sortDay'}
+              name={'drawingDate'}
               control={control}
               render={({ field }) => (
-                <DateCalendar value={dayjs(field.value)} shouldDisablePast />
+                <DateCalendar
+                  value={dayjs(field.value)}
+                  shouldDisablePast
+                  handleChange={(value) => field.onChange(value)}
+                />
               )}
             />
           )}
@@ -197,6 +219,7 @@ const EditRaffle: React.FC = () => {
             control={control}
             render={({ field }) => (
               <Toggle
+                label="INFORMAR DATA"
                 enabled={field.value}
                 setEnabled={(enabled) => {
                   field.onChange(enabled) // Atualiza o valor do campo controlado
@@ -232,6 +255,7 @@ const EditRaffle: React.FC = () => {
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value}
                 options={[
                   {
                     id: '25',
@@ -250,9 +274,35 @@ const EditRaffle: React.FC = () => {
             )}
           />
 
+          <Controller
+            name={'showRanking'}
+            control={control}
+            render={({ field }) => (
+              <div className="flex justify-between items-center">
+                <span>Mostrar ranking</span>
+                <Toggle
+                  enabled={field.value}
+                  setEnabled={(enabled) => {
+                    field.onChange(enabled) // Atualiza o valor do campo controlado
+                  }}
+                />
+              </div>
+            )}
+          />
           <MyModal />
           <MyModalInput />
         </div>
+
+        <button
+          className="flex justify-center items-center mt-8 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg"
+          type="submit"
+        >
+          <div className="w-full">
+            <span className="flex gap-2 items-center">
+              Salvar <FaArrowRightLong />
+            </span>
+          </div>
+        </button>
       </form>
     </div>
   )
