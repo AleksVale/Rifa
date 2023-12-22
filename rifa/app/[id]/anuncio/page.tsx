@@ -1,16 +1,32 @@
 'use client'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { Input } from '@mui/material'
 import Slider from '@/components/Slider/Slider'
+import { Raffle, RaffleService } from '@/services/Raffle.service'
 
-function Anuncio() {
+function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
+  const [tickets, setTickets] = React.useState<number>(1)
+  const [raffle, setRaffle] = React.useState<Raffle>()
+  const getAnuncio = useCallback(async () => {
+    const raffleResponse = await RaffleService.get(params.id)
+    setRaffle(raffleResponse)
+  }, [params.id])
+
+  const handleChangeTicketValue = (quantity: number) => {
+    setTickets((state) => (state + quantity >= 0 ? state + quantity : 0))
+  }
+
+  useEffect(() => {
+    getAnuncio()
+  }, [getAnuncio])
+
   return (
     <div className="container py-6 px-6 ml-auto mr-auto bg-slate-200">
       <div>
         <Slider />
       </div>
-      <div className="flex font-bold text-black text-2xl">Sorteio</div>
+      <div className="flex font-bold text-black text-2xl">{raffle?.name}</div>
       <hr className="my-4 dark:border-gray-700"></hr>
       <div className="space-y-6 justify-between">
         <div className="flex items-start gap-3">
@@ -66,24 +82,14 @@ function Anuncio() {
             </div>
           </div>
           <div className="mt-4">
-            <div className="mt-2">
-              <div className="text-sm font-medium">
-                <span className="font-semibold">1º lugar </span>
-                <span>- 1000 kwanzas</span>
+            {raffle?.Prize.map((prize) => (
+              <div className="mt-2" key={prize.id}>
+                <div className="text-sm font-medium">
+                  <span className="font-semibold">{prize.place}º lugar </span>
+                  <span>- {prize.name}</span>
+                </div>
               </div>
-            </div>
-            <div className="mt-2">
-              <div className="text-sm font-medium">
-                <span className="font-semibolds">2º lugar </span>
-                <span>- 32 kwanzas</span>
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="text-sm font-medium">
-                <span className="font-semibold">3º lugar </span>
-                <span>- 42 kwanzas</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -95,7 +101,7 @@ function Anuncio() {
           DESCRIÇÃO / REGULAMENTO{' '}
         </p>
         <p className="mt-4 text-sm max-w-xl mx-auto rx-content">
-          <p>Sorteio</p>
+          <p>{raffle?.description}</p>
         </p>
       </section>
       <section className="relative">
@@ -108,6 +114,7 @@ function Anuncio() {
             <button
               type="button"
               className="border button dark:border-gray-600 text-sm py-2 text-center rounded-lg dark:hover:bg-gray-900 font-semibold"
+              onClick={() => handleChangeTicketValue(1)}
             >
               {' '}
               +1
@@ -115,6 +122,7 @@ function Anuncio() {
             <button
               type="button"
               className="border button dark:border-gray-600 text-sm py-2 text-center rounded-lg dark:hover:bg-gray-900 font-semibold"
+              onClick={() => handleChangeTicketValue(5)}
             >
               {' '}
               +5
@@ -122,6 +130,7 @@ function Anuncio() {
             <button
               type="button"
               className="border button dark:border-gray-600 text-sm py-2 text-center rounded-lg dark:hover:bg-gray-900 font-semibold"
+              onClick={() => handleChangeTicketValue(10)}
             >
               {' '}
               +10
@@ -129,17 +138,31 @@ function Anuncio() {
             <button
               type="button"
               className="border button dark:border-gray-600 text-sm py-2 text-center rounded-lg dark:hover:bg-gray-900 font-semibold"
+              onClick={() => handleChangeTicketValue(100)}
             >
               {' '}
               +100
             </button>
           </div>
           <div className="flex items-center gap-4 mt-4 max-w-xl mx-auto">
-            <button type="button" className="border p-1 rounded-full w-10 h-10">
+            <button
+              type="button"
+              className="border p-1 rounded-full w-10 h-10"
+              onClick={() => handleChangeTicketValue(-1)}
+            >
               -
             </button>
-            <Input type="number" className="input text-center" />
-            <button className="border p-1 rounded-full w-10 h-10" type="button">
+            <Input
+              type="number"
+              className="input text-center"
+              onChange={(e) => setTickets(Number(e.target.value))}
+              value={tickets}
+            />
+            <button
+              className="border p-1 rounded-full w-10 h-10"
+              type="button"
+              onClick={() => handleChangeTicketValue(1)}
+            >
               +
             </button>
           </div>
