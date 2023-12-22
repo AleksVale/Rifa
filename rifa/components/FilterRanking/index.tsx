@@ -1,6 +1,4 @@
 'use client'
-import DropdownDefault from '@/components/Dropdowns/DropdownDefault'
-import Dropdawn from '@/components/Dropdawn/Dropdawn'
 import { Select } from '@/components/Select/Select'
 import { useState } from 'react'
 
