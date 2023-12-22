@@ -21,7 +21,7 @@ const CalendarPage = () => {
         </div>
         <div className="container flex justify-between space-x-1">
           <div className="flex-1">
-            <Select options={selectOptions} />
+            <Select options={selectOptions} value="Selecione uma opção" />
           </div>
           <div>
             <button className="flex items-center justify-center bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded-lg space-x-2">

@@ -8,6 +8,8 @@ import Loader from '@/components/common/Loader'
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import { Inter } from 'next/font/google'
+import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,9 +22,17 @@ export default function RootLayout({
 
   const [loading, setLoading] = useState<boolean>(true)
 
+  const router = useRouter()
+
+  const { token } = useAuth()
+
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)
-  }, [])
+
+    if (!token) {
+      router.replace('/login')
+    }
+  }, [router, token])
 
   return (
     <div suppressHydrationWarning={true} className={inter.className}>

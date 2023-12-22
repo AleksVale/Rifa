@@ -34,7 +34,7 @@ http.interceptors.response.use(
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
     const token = localStorage.getItem('token')
-    if (token) {
+    if (token && token !== 'undefined') {
       config.headers.Authorization = `Bearer ${JSON.parse(token)}`
     }
     return config
