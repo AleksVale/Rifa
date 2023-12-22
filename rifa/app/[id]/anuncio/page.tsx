@@ -17,6 +17,10 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
     setTickets((state) => (state + quantity >= 0 ? state + quantity : 0))
   }
 
+  const generateDescription = () => {
+    const description = raffle?.description?.split('<p>')
+  }
+
   useEffect(() => {
     getAnuncio()
   }, [getAnuncio])
@@ -101,7 +105,9 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
           DESCRIÇÃO / REGULAMENTO{' '}
         </p>
         <p className="mt-4 text-sm max-w-xl mx-auto rx-content">
-          <p>{raffle?.description}</p>
+          {raffle?.description && (
+            <div dangerouslySetInnerHTML={{ __html: raffle?.description }} />
+          )}
         </p>
       </section>
       <section className="relative">

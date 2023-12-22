@@ -22,8 +22,8 @@ const schema = z.object({
   description: z
     .string()
     .min(3, { message: 'Description must be at least 3 characters long' }),
-  minTickets: z.number().min(1, { message: 'Min tickets must be at least 1' }),
-  maxTickets: z.number().min(1, { message: 'Max tickets must be at least 1' }),
+  minTickets: z.string(),
+  maxTickets: z.number(),
   timeToPay: z.string().min(1, { message: 'Time to pay must be at least 1' }),
   drawingDate: z.any(),
   hasSortDay: z.boolean(),
@@ -49,6 +49,7 @@ const EditRaffle: React.FC = () => {
     resolver: zodResolver(schema),
   })
 
+  console.log(errors)
   const watchName = watch('name', 'Carregando')
 
   const watchHasSortDay = watch('hasSortDay', false)
@@ -66,6 +67,7 @@ const EditRaffle: React.FC = () => {
     const raffle = {
       ...raffles,
       description: conteudoHTML,
+      minTickets: Number(data.minTickets),
       drawingDate: data.hasSortDay ? data.drawingDate.toDate() : null,
     }
     console.log(raffle)
@@ -81,7 +83,7 @@ const EditRaffle: React.FC = () => {
       hasSortDay: !!response.drawingDate,
       description:
         response.description?.replace(/<p>/g, '').replace(/<\/p>/g, '\n') ?? '',
-      minTickets: response.minTickets ?? 1,
+      minTickets: `${response.minTickets}`,
       maxTickets: response.maxTickets ?? 300,
       timeToPay: response.timeToPay ?? '1 hora',
       showRanking: response.showRanking ?? false,

@@ -8,6 +8,7 @@ import InputLabel from '@/components/Input'
 import { Select } from '@/components/Select/Select'
 import CurrencyInput from 'react-currency-input-field'
 import { RaffleService } from '@/services/Raffle.service'
+import { useRouter } from 'next/navigation'
 
 const schema = z.object({
   name: z
@@ -15,11 +16,11 @@ const schema = z.object({
     .min(3, { message: 'Name must be at least 3 characters long' }),
   quantityTickets: z.string(),
   valueTicket: z.number().min(0.1, { message: 'Value must be at least 0.1' }),
-  sortDate: z.string(),
 })
 
 export type CreateRaffleInput = z.infer<typeof schema>
 const CreateRaffle: React.FC = () => {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -27,6 +28,7 @@ const CreateRaffle: React.FC = () => {
     formState: { errors },
   } = useForm<CreateRaffleInput>({
     resolver: zodResolver(schema),
+    defaultValues: { valueTicket: 0.4 },
   })
   const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
     const raffle = {
@@ -35,8 +37,11 @@ const CreateRaffle: React.FC = () => {
       price: data.valueTicket,
     }
     const response = await RaffleService.create(raffle)
-    console.log(response)
+
+    router.push(`/admin/raffles/${response.data.id}/edit`)
   }
+
+  console.log(errors)
 
   return (
     <div className="flex-grow">

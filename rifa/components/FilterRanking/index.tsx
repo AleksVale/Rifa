@@ -1,14 +1,34 @@
 'use client'
 import { Select } from '@/components/Select/Select'
-import { useState } from 'react'
+import { RaffleService } from '@/services/Raffle.service'
+import { useCallback, useEffect, useState } from 'react'
 
 const selectOptions = [{ id: 'gato', label: 'cachorro' }]
 const FilterRanking = () => {
   const [selectedRaffle, setSelectedRaffle] = useState('Selecione uma opção')
 
+  const [raffleOptions, setRaffleOptions] = useState<
+    { id: number; label: string }[]
+  >([])
+
   const handleSelectRaffle = (value: string) => {
     setSelectedRaffle(value)
   }
+
+  const getRaffles = useCallback(async () => {
+    const response = await RaffleService.list()
+    const options = response.data.map((raffle) => {
+      return {
+        id: raffle.id,
+        label: raffle.name,
+      }
+    })
+    setRaffleOptions(options)
+  }, [])
+
+  useEffect(() => {
+    getRaffles()
+  }, [getRaffles])
 
   return (
     <>
@@ -22,7 +42,7 @@ const FilterRanking = () => {
         <div className="container flex justify-between space-x-1">
           <div className="flex-1">
             <Select
-              options={selectOptions}
+              options={raffleOptions}
               value={selectedRaffle}
               onChange={handleSelectRaffle}
             />
