@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Input } from '@mui/material'
 import Slider from '@/components/Slider/Slider'
 import { Raffle, RaffleService } from '@/services/Raffle.service'
+import FormDialog from '@/components/TicketBuyModal'
 
 function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
   const [tickets, setTickets] = React.useState<number>(1)
@@ -184,6 +185,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             >
               RESERVAR
             </button>
+            <FormDialog />
           </div>
         </form>
       </section>
