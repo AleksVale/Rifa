@@ -40,7 +40,6 @@ interface PromotionProps {
 }
 
 export default function PromotionModal({ items, onSave }: PromotionProps) {
-  console.log(items)
   const [isOpen, setIsOpen] = useState(false)
   const {
     control,

@@ -34,6 +34,12 @@ const schema = z.object({
       price: z.number().min(1, { message: 'Value must be at least 1' }),
     }),
   ),
+  prizes: z.array(
+    z.object({
+      place: z.number().min(1, { message: 'Place must be at least 1' }),
+      name: z.string(),
+    }),
+  ),
 })
 
 export type CreateRaffleInput = z.infer<typeof schema>
@@ -70,9 +76,7 @@ const EditRaffle: React.FC = () => {
       minTickets: Number(data.minTickets),
       drawingDate: data.hasSortDay ? data.drawingDate.toDate() : null,
     }
-    console.log(raffle)
     const response = await RaffleService.update(raffle, id as string)
-    console.log(response)
     response.success && router.push('/admin')
   }
 
@@ -88,6 +92,7 @@ const EditRaffle: React.FC = () => {
       timeToPay: response.timeToPay ?? '1 hora',
       showRanking: response.showRanking ?? false,
       promotions: response.Promotion ?? [],
+      prizes: response.Prize ?? [],
     })
   }, [id, reset])
 
@@ -95,8 +100,8 @@ const EditRaffle: React.FC = () => {
     getRaffle()
   }, [getRaffle])
 
-  const updatePromotions = (promotions: any, field: any) => {
-    field.onChange(promotions)
+  const updateField = (fieldValue: any, field: any) => {
+    field.onChange(fieldValue)
   }
 
   return (
@@ -302,7 +307,17 @@ const EditRaffle: React.FC = () => {
               </div>
             )}
           />
-          <MyModal />
+
+          <Controller
+            name="prizes"
+            control={control}
+            render={({ field }) => (
+              <MyModal
+                items={field.value}
+                onSave={(prizes) => updateField(prizes, field)}
+              />
+            )}
+          />
 
           <Controller
             name="promotions"
@@ -310,7 +325,7 @@ const EditRaffle: React.FC = () => {
             render={({ field }) => (
               <PromotionModal
                 items={field.value}
-                onSave={(promotions) => updatePromotions(promotions, field)}
+                onSave={(promotions) => updateField(promotions, field)}
               />
             )}
           />
