@@ -55,7 +55,7 @@ export function Select({ options, onChange, value }: Props) {
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className="absolute mt-1 w-full rounded-md bg-white shadow-lg"
+                className="absolute mt-1 w-full rounded-md bg-white shadow-lg  z-99999"
               >
                 <Listbox.Options
                   static

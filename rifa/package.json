@@ -14,6 +14,7 @@
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@mui/material": "^5.15.0",
+    "@mui/x-data-grid": "^6.18.6",
     "@mui/x-date-pickers": "^6.18.5",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/unitedstates": "^1.0.1",
