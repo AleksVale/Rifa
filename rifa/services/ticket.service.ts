@@ -22,7 +22,7 @@ export interface Buyer {
 }
 
 export class TicketService {
-  static async getBuyersFromRaffle(id: number) {
+  static async getBuyersFromRaffle(id: string) {
     return await http.get<Buyer[]>('ticket/raffle/' + id)
   }
 }

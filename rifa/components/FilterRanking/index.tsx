@@ -5,8 +5,13 @@ import { Buyer, TicketService } from '@/services/ticket.service'
 import { useCallback, useEffect, useState } from 'react'
 import { DataGrid, GridColDef, GridRowsProp, ptBR } from '@mui/x-data-grid'
 import { formatPhoneNumber } from '@/utils/formatter'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 const FilterRanking = () => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
   const [selectedRaffle, setSelectedRaffle] = useState('Selecione uma opção')
 
   const [showSensitiveData, setShowSensitiveData] = useState(false)
@@ -122,14 +127,37 @@ const FilterRanking = () => {
   const [raffleOptions, setRaffleOptions] = useState<
     { id: number; label: string; price: number }[]
   >([])
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams],
+  )
 
   const handleSelectRaffle = async (value: string) => {
     setSelectedRaffle(value)
     const raffle = raffleOptions.find((raffle) => raffle.label === value)
-    const response = await TicketService.getBuyersFromRaffle(raffle?.id ?? 0)
     setRaffleTicketValue(raffle?.price ?? 0)
+
+    router.push(
+      `${pathname}?${createQueryString(
+        'raffle',
+        raffle?.id.toString() ?? '0',
+      )}`,
+    )
+  }
+
+  const getRaffle = async (id: string) => {
+    const response = await TicketService.getBuyersFromRaffle(id)
     setBuyers(response.data)
   }
+
+  useEffect(() => {
+    getRaffle(searchParams.get('raffle') ?? '0')
+  }, [searchParams])
 
   const getRaffles = useCallback(async () => {
     const response = await RaffleService.list()

@@ -11,9 +11,10 @@ interface Props {
   options: Option[]
   onChange?: (option: string) => void
   value: string
+  error?: string
 }
 
-export function Select({ options, onChange, value }: Props) {
+export function Select({ options, onChange, value, error }: Props) {
   const handleSelectOptions = (option: string) => {
     onChange?.(option)
   }
@@ -106,6 +107,7 @@ export function Select({ options, onChange, value }: Props) {
           )}
         </Listbox>
       </div>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   )
 }

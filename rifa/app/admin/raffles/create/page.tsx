@@ -9,12 +9,15 @@ import { Select } from '@/components/Select/Select'
 import CurrencyInput from 'react-currency-input-field'
 import { RaffleService } from '@/services/Raffle.service'
 import { useRouter } from 'next/navigation'
+import { Loading } from '@/components/Loading'
 
 const schema = z.object({
   name: z
     .string()
     .min(3, { message: 'Name must be at least 3 characters long' }),
-  quantityTickets: z.string(),
+  quantityTickets: z.string({
+    required_error: 'Quantidade de bilhetes é obrigatório',
+  }),
   valueTicket: z.number().min(0.1, { message: 'Value must be at least 0.1' }),
 })
 
@@ -25,10 +28,12 @@ const CreateRaffle: React.FC = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CreateRaffleInput>({
     resolver: zodResolver(schema),
-    defaultValues: { valueTicket: 0.4 },
+    defaultValues: {
+      valueTicket: 0.4,
+    },
   })
   const onSubmit: SubmitHandler<CreateRaffleInput> = async (data) => {
     const raffle = {
@@ -41,10 +46,9 @@ const CreateRaffle: React.FC = () => {
     router.push(`/admin/raffles/${response.data.id}/edit`)
   }
 
-  console.log(errors)
-
   return (
     <div className="flex-grow">
+      <Loading isLoading={isSubmitting} />
       <div className="py-8 px-4 sm:px-8 container">
         <h1 className="font-bold text-2xl sm:text-3xl flex items-center gap-2">
           <FaTicket size="40" /> <span className="ml-1">Criar Campanha</span>
@@ -71,6 +75,7 @@ const CreateRaffle: React.FC = () => {
             render={({ field }) => (
               <Select
                 {...field}
+                error={errors.quantityTickets?.message}
                 onChange={(value) => field.onChange(value)}
                 options={[
                   { id: '1', label: '25 bilhetes - (00 à 24)' },
@@ -81,7 +86,6 @@ const CreateRaffle: React.FC = () => {
                   { id: '6', label: '400 bilhetes - (000 à 399)' },
                   { id: '7', label: '500 bilhetes - (000 à 499)' },
                   { id: '8', label: '600 bilhetes - (000 à 599)' },
-                  // Pula de 1000 em 1000 até 6000
                   { id: '9', label: '1000 bilhetes - (0000 à 0999)' },
                   { id: '10', label: '2000 bilhetes - (0000 à 1999)' },
                   { id: '11', label: '3000 bilhetes - (0000 à 2999)' },

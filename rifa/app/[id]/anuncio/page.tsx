@@ -9,6 +9,13 @@ import FormDialog from '@/components/TicketBuyModal'
 function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
   const [tickets, setTickets] = React.useState<number>(1)
   const [raffle, setRaffle] = React.useState<Raffle>()
+
+  const [open, setOpen] = React.useState(false)
+
+  const handleCloseModal = () => {
+    setOpen(false)
+  }
+
   const getAnuncio = useCallback(async () => {
     const raffleResponse = await RaffleService.get(params.id)
     setRaffle(raffleResponse)
@@ -18,9 +25,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
     setTickets((state) => (state + quantity >= 0 ? state + quantity : 0))
   }
 
-  const generateDescription = () => {
-    const description = raffle?.description?.split('<p>')
-  }
+  const totalAmmount = raffle?.price ? tickets * raffle?.price : 0
 
   useEffect(() => {
     getAnuncio()
@@ -182,10 +187,16 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             <button
               type="button"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-8 w-full"
+              onClick={() => setOpen(true)}
             >
               RESERVAR
             </button>
-            <FormDialog />
+            <FormDialog
+              handleClose={handleCloseModal}
+              open={open}
+              quantity={tickets}
+              value={totalAmmount}
+            />
           </div>
         </form>
       </section>

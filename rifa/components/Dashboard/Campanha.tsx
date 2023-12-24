@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { FaTriangleExclamation, FaTicket, FaFaceSadCry } from 'react-icons/fa6'
 import { Select } from '../Select/Select'
 import { Raffle, RaffleService } from '@/services/Raffle.service'
+import { RaffleInfo } from '../RaffleInfo'
 
 const Campanha: React.FC = () => {
   const [hasPayment, setHasPayment] = React.useState(true)
@@ -59,7 +60,7 @@ const Campanha: React.FC = () => {
       <p className="text-gray-500 mt-2 text-sm">
         Aqui estão suas campanhas criadas.
       </p>
-      <div className="pt-2">
+      <div className="pt-2 pb-4">
         <Select
           value={raffleStatus}
           onChange={(value) => setRaffleStatus(value)}
@@ -73,7 +74,16 @@ const Campanha: React.FC = () => {
         />
       </div>
       {raffles.length > 0 ? (
-        raffles.map((raffle) => <h1 key={raffle.id}>{raffle.name}</h1>)
+        raffles.map((raffle) => (
+          <div key={raffle.id} className="pb-2">
+            <RaffleInfo
+              id={raffle.id}
+              name={raffle.name}
+              tickets={raffle.tickets}
+              totalTickets={raffle.ticketLimit}
+            />
+          </div>
+        ))
       ) : (
         <div className="max-w-full rounded-xl mt-6 overflow-hidden shadow-lg bg-white">
           <div className="px-10 py-6">
