@@ -179,8 +179,14 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             </button>
           </div>
           <div className="max-w-xl mx-auto mt-6 text-sm">
-            <div className="flex-h-between">
+            <div className="flex justify-between">
               <span>Valor final</span>
+              <span>
+                {totalAmmount.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
+              </span>
             </div>
           </div>
           <div className="max-w-xl mx-auto">
