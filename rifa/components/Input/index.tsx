@@ -62,12 +62,12 @@ const InputLabel = React.forwardRef(
         {mask ? (
           <InputMask
             mask={mask}
-            maskChar="-"
+            maskChar="_"
             {...register(name)}
             name={name}
             className={`${
               icon
-                ? ' roundedrouded-l-none focus:outline-none'
+                ? ' rounded rounded-l-none focus:outline-none'
                 : 'rounded focus:outline-green-300'
             }block appearance-none border border-slate-300 w-full h-12 px-3 text-gray-700 leading-tight`}
             id={name}
@@ -80,9 +80,9 @@ const InputLabel = React.forwardRef(
             name={name}
             className={`${
               icon
-                ? ' roundedrouded-l-none focus:outline-none'
+                ? ' rounded rounded-l-none focus:outline-none'
                 : 'rounded focus:outline-green-300'
-            }block appearance-none border border-slate-300 w-full h-12 px-3 text-gray-700 leading-tight`}
+            } block appearance-none border border-slate-300 w-full h-12 px-3 text-gray-700 leading-tight`}
             id={name}
             type="text"
             placeholder={placeholder}

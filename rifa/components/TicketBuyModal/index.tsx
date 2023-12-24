@@ -9,6 +9,7 @@ import InputLabel from '../Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Divider } from '@mui/material'
+import { TicketService } from '@/services/ticket.service'
 
 const buyTicketSchema = z
   .object({
@@ -19,36 +20,37 @@ const buyTicketSchema = z
     email: z
       .string({ required_error: 'O campo é obrigatório' })
       .email('Email inválido'),
-    telefone: z
+    phone: z
       .string({ required_error: 'O campo é obrigatório' })
       .min(8)
       .max(15)
       .transform((data) => normalizePhoneNumber(data)),
     confirmPhone: z
       .string({ required_error: 'O campo é obrigatório' })
-      .min(11, { message: 'Formato inválido, utilize 11999999999' })
-      .max(15, { message: 'Formato inválido, utilize 11999999999' })
+      .min(11, { message: 'Telefone inválido' })
+      .max(15, { message: 'Telefone inválido' })
       .transform((data) => normalizePhoneNumber(data)),
   })
-  .refine((data) => data.telefone === data.confirmPhone, {
+  .refine((data) => data.phone === data.confirmPhone, {
     message: 'Os números de telefone não coincidem',
     path: ['confirmPhone'],
   })
 function normalizePhoneNumber(phoneNumber: string) {
-  return phoneNumber.replace(/\D/g, '') // Remove non-numeric characters
+  return phoneNumber.replace(/\D/g, '')
 }
 
 export type BuyTicketInput = z.infer<typeof buyTicketSchema>
 
 interface FormDialogProps {
   open: boolean
-  handleClose: () => void
+  handleClose: (checkout?: string) => void
   quantity: number
   value: number
+  raffleId: number
 }
 
 const FormDialog = React.memo(
-  ({ handleClose, open, quantity, value }: FormDialogProps) => {
+  ({ handleClose, open, quantity, value, raffleId }: FormDialogProps) => {
     const {
       register,
       handleSubmit,
@@ -56,14 +58,25 @@ const FormDialog = React.memo(
     } = useForm<BuyTicketInput>({
       resolver: zodResolver(buyTicketSchema),
     })
-    const onSubmit: SubmitHandler<BuyTicketInput> = (data) => {
-      // Handle form submission here
-      console.log(data)
-      handleClose()
+    const onSubmit: SubmitHandler<BuyTicketInput> = async (data) => {
+      const response = await TicketService.createTickets({
+        ...data,
+        quantity,
+        price: value,
+        raffleId,
+      })
+      handleClose(
+        response.data.point_of_interaction.transaction_data.ticket_url,
+      )
     }
 
     return (
-      <Dialog open={open} onClose={handleClose} maxWidth={'sm'} fullWidth>
+      <Dialog
+        open={open}
+        onClose={handleClose as any}
+        maxWidth={'sm'}
+        fullWidth
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogTitle>Reservar bilhetes</DialogTitle>
           <Divider />
@@ -88,8 +101,8 @@ const FormDialog = React.memo(
               register={register}
               errors={errors}
               label=""
-              name="telefone"
-              placeholder="Telefone/Whatsapp ((11)99999-9999)"
+              name="phone"
+              placeholder="Telefone/Whatsapp"
               mask="(99) 99999-9999"
               icon="phone"
             />
@@ -105,8 +118,15 @@ const FormDialog = React.memo(
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Subscribe</Button>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              type="submit"
+              className="py-4"
+            >
+              Reservar
+            </Button>
           </DialogActions>
         </form>
       </Dialog>

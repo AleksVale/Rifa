@@ -21,8 +21,21 @@ export interface Buyer {
   Ticket: Ticket[]
 }
 
+interface CreateTicketDTO {
+  name: string
+  email: string
+  phone: string
+  quantity: number
+  price: number
+  raffleId: number
+}
+
 export class TicketService {
   static async getBuyersFromRaffle(id: string) {
     return await http.get<Buyer[]>('ticket/raffle/' + id)
+  }
+
+  static async createTickets(data: CreateTicketDTO) {
+    return await http.post('ticket', data)
   }
 }

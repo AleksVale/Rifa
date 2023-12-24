@@ -1,19 +1,25 @@
 'use client'
 import React, { useCallback, useEffect } from 'react'
 import Image from 'next/image'
-import { Input } from '@mui/material'
+import { TextField } from '@mui/material'
 import Slider from '@/components/Slider/Slider'
 import { Raffle, RaffleService } from '@/services/Raffle.service'
 import FormDialog from '@/components/TicketBuyModal'
+import { useRouter } from 'next/navigation'
 
 function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
+  const router = useRouter()
+
   const [tickets, setTickets] = React.useState<number>(1)
   const [raffle, setRaffle] = React.useState<Raffle>()
 
   const [open, setOpen] = React.useState(false)
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (ticketUrl?: string) => {
     setOpen(false)
+    if (typeof ticketUrl === 'string') {
+      router.push(`/checkout/?checkout=${encodeURIComponent(ticketUrl)}`)
+    }
   }
 
   const getAnuncio = useCallback(async () => {
@@ -164,11 +170,14 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             >
               -
             </button>
-            <Input
+            <TextField
               type="number"
+              inputProps={{ min: 1, style: { textAlign: 'center' } }}
               className="input text-center"
+              fullWidth
               onChange={(e) => setTickets(Number(e.target.value))}
               value={tickets}
+              variant="standard"
             />
             <button
               className="border p-1 rounded-full w-10 h-10"
@@ -193,7 +202,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             <button
               type="button"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-8 w-full"
-              onClick={() => setOpen(true)}
+              onClick={() => tickets > 0 && setOpen(true)}
             >
               RESERVAR
             </button>
@@ -202,6 +211,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
               open={open}
               quantity={tickets}
               value={totalAmmount}
+              raffleId={raffle?.id ?? 0}
             />
           </div>
         </form>
