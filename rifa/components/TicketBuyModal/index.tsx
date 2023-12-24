@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Divider } from '@mui/material'
 import { TicketService } from '@/services/ticket.service'
+import { normalizePhoneNumber } from '@/utils/formatter'
 
 const buyTicketSchema = z
   .object({
@@ -35,9 +36,6 @@ const buyTicketSchema = z
     message: 'Os números de telefone não coincidem',
     path: ['confirmPhone'],
   })
-function normalizePhoneNumber(phoneNumber: string) {
-  return phoneNumber.replace(/\D/g, '')
-}
 
 export type BuyTicketInput = z.infer<typeof buyTicketSchema>
 

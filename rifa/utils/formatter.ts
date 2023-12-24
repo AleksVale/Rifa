@@ -11,3 +11,7 @@ export function formatPhoneNumber(phoneNumber: string | number) {
   // Formatar o número no padrão brasileiro
   return `(${match[1]}) ${match[2]}-${match[3]}`
 }
+
+export function normalizePhoneNumber(phoneNumber: string) {
+  return phoneNumber.replace(/\D/g, '')
+}
