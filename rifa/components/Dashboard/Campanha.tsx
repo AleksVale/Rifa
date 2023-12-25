@@ -94,7 +94,7 @@ const Campanha: React.FC = () => {
             <div className="flex justify-center">
               <Link
                 className="text-white font-semibold hover:scale-105 px-8 py-2 flex gap-2 items-center rounded-lg bg-black-2 mt-2 "
-                href="/raffles/create"
+                href="admin/raffles/create"
               >
                 <FaTicket className="text-white" size="24" />
                 CRIAR CAMPANHA{' '}
