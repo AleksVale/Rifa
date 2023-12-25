@@ -38,15 +38,21 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
     getAnuncio()
   }, [getAnuncio])
 
+  const urls = raffle?.RaffleImage.map((image) => ({
+    url: `http://localhost:3000/${image.name}`,
+  }))
+
   return (
     <main className=" bg-slate-200">
       <header className="bg-white fixed w-full h-10 mb-16 z-99999 border-b border-b-gray-300 ">
         <PaymentModal />
       </header>
       <div className="container pb-6 pt-14 px-6 ml-auto mr-auto max-w-280">
-        <div>
-          <Slider />
-        </div>
+        {urls && (
+          <div>
+            <Slider urls={urls} />
+          </div>
+        )}
         <div className="flex font-bold text-black text-2xl">{raffle?.name}</div>
         <hr className="my-4 dark:border-gray-700"></hr>
         <div className="space-y-6 justify-between">

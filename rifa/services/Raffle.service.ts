@@ -42,6 +42,15 @@ export interface Winner {
   updatedAt?: string | null
   raffleId: number
 }
+
+export interface RaffleImage {
+  id: number
+  name: string
+  url: string
+  createdAt: string
+  updatedAt: string
+  raffleId: number
+}
 export interface Raffle {
   id: number
   name: string
@@ -59,6 +68,7 @@ export interface Raffle {
   Prize: Prize[]
   Promotion: Promotion[]
   Winner?: Winner | null
+  RaffleImage: RaffleImage[]
 }
 
 interface CreateRaffleDTO {
@@ -76,9 +86,26 @@ export class RaffleService {
     return await http.post<Raffle>('raffles', data)
   }
 
-  static async update(data: any, id: string) {
-    console.log('data', data)
+  static async update(data: any, id: string, images: File[] | null) {
+    if (images) {
+      this.updatePhotos(id, images)
+    }
     return (await http.patch<{ success: boolean }>(`raffles/${id}`, data)).data
+  }
+
+  static async updatePhotos(id: string, images: File[]) {
+    const formData = new FormData()
+
+    images.forEach((image) => {
+      formData.append(`files`, image)
+    })
+    return (
+      await http.patch<{ success: boolean }>(`raffles/${id}/photos`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    ).data
   }
 
   static async get(id: string) {

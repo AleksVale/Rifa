@@ -1,6 +1,6 @@
 'use client'
-import React, { useCallback, useEffect } from 'react'
-import { FaTicket, FaArrowRightLong } from 'react-icons/fa6'
+import React, { ChangeEvent, useCallback, useEffect } from 'react'
+import { FaTicket, FaArrowRightLong, FaCloudArrowUp } from 'react-icons/fa6'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,6 +14,7 @@ import Image from 'next/image'
 import MyModal from '@/components/Mydialog/MyDialog'
 import PromotionModal from '@/components/Mydialoginput/MyDialogInput'
 import dayjs from 'dayjs'
+import EditFile from '@/components/EditFile'
 
 const schema = z.object({
   name: z
@@ -55,7 +56,8 @@ const EditRaffle: React.FC = () => {
     resolver: zodResolver(schema),
   })
 
-  console.log(errors)
+  const [files, setFiles] = React.useState<File[] | null>(null)
+
   const watchName = watch('name', 'Carregando')
 
   const watchHasSortDay = watch('hasSortDay', false)
@@ -76,8 +78,22 @@ const EditRaffle: React.FC = () => {
       minTickets: Number(data.minTickets),
       drawingDate: data.hasSortDay ? data.drawingDate.toDate() : null,
     }
-    const response = await RaffleService.update(raffle, id as string)
+    const response = await RaffleService.update(raffle, id as string, files)
     response.success && router.push('/admin')
+  }
+
+  const handleSelectFiles = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    console.log(files)
+    setFiles(Array.from(files ?? []))
+  }
+
+  const handleDeletePhoto = (index: number) => {
+    setFiles((value) =>
+      value && value.length > 1
+        ? [...value.slice(0, index), ...value.slice(index + 1)]
+        : null,
+    )
   }
 
   const getRaffle = useCallback(async () => {
@@ -167,15 +183,24 @@ const EditRaffle: React.FC = () => {
               <b className="mr-1">Tamanho recomendado: </b> 1365x758 pixels{' '}
             </div>
           </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-1 mt-3 border-2 border-gray-300 rounded-md p-2">
-              Imagem
-              <input
-                type="file"
-                accept="image/*"
-                className="text-sm text-gray-500 file:mr-5 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:cursor-pointer hover:file:bg-blue-100"
-              />
-            </label>
+          <div className="flex overflow-x-auto gap-4">
+            <span className="flex-none bg-white w-full sm:w-[300px] h-28 text-2xl">
+              <label
+                htmlFor="files"
+                className="w-full relative flex cursor-pointer flex-col items-center text-blue-400 justify-center border-4 h-full border-blue-200 hover:text-gray-400 rounded-md border-dashed hover:bg-gray-100 hover:border-gray-300"
+              >
+                <FaCloudArrowUp className="absolute te fa-solid fa-cloud-arrow-up" />
+                <input
+                  id="files"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden w-full"
+                  onChange={handleSelectFiles}
+                />
+              </label>
+            </span>
+            <EditFile files={files ?? []} onDelete={handleDeletePhoto} />
           </div>
           <div className="flex space-x-7">
             <InputLabel
