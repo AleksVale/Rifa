@@ -3,8 +3,15 @@ import { Buyer } from '@/services/ticket.service'
 import { Transaction } from '@/services/transaction.service'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import TailwindBadge from '../TailwindBadge'
-import { FaEllipsisVertical } from 'react-icons/fa6'
+import {
+  FaCalendar,
+  FaCircleDollarToSlot,
+  FaEllipsisVertical,
+  FaTicket,
+  FaTicketSimple,
+} from 'react-icons/fa6'
 import { Menu, Transition } from '@headlessui/react'
+import dayjs from 'dayjs'
 
 interface TransactionInfoProps {
   transaction: Transaction
@@ -60,16 +67,34 @@ export default function TransactionInfo({ transaction }: TransactionInfoProps) {
         </Menu>
       </div>
       <div className="relative">
-        <hr className="my-3.5 block sm:hidden" />
         <div className="mt-1 text-gray-500 flex flex-col sm:flex-row flex-wrap items-start gap-x-4 gap-y-1.5">
-          {/* Add your dynamic information here */}
           <span className="inline-flex items-center gap-1.5">
-            {/* Add your icon and dynamic value here */}
+            <FaCircleDollarToSlot />
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(transaction.value)}
           </span>
+
           <span className="inline-flex flex-wrap items-center gap-x-1.5">
-            {/* Add your icon and dynamic value here */}
+            <FaTicket color="gray" size={18} /> {transaction.amount} bilhetes
           </span>
-          {/* Add more dynamic information here */}
+
+          <span className="inline-flex items-center gap-1.5">
+            <FaCalendar />
+            Criada em {dayjs(transaction.createdAt).format('DD/MM/YYYY, hh:mm')}
+          </span>
+        </div>
+        <hr className="my-3.5 block sm:hidden" />
+        <div className="mt-3 text-gray-500 flex flex-wrap items-start gap-x-4 gap-y-1.5">
+          {transaction.Ticket?.map((ticket) => (
+            <span key={ticket.id} className="inline-flex items-center gap-1.5">
+              <TailwindBadge
+                color={isPending ? 'yellow' : 'green'}
+                text={`${ticket.number}`}
+              />
+            </span>
+          ))}
         </div>
       </div>
       <hr className="my-4" />
