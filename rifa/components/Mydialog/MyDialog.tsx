@@ -89,7 +89,7 @@ export default function MyModal({ items, onSave }: PrizeModalProps) {
 
   return (
     <>
-      <div className="flex items-center justify-center mt-2 w-screen">
+      <div className="flex flex-1 items-center justify-center mt-2">
         <button
           type="button"
           onClick={openModal}

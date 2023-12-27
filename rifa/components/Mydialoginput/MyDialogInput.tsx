@@ -94,7 +94,7 @@ export default function PromotionModal({ items, onSave }: PromotionProps) {
 
   return (
     <>
-      <div className="flex items-center justify-start mt-2 w-screen">
+      <div className="flex flex-1 items-center justify-start mt-2">
         <button
           type="button"
           onClick={openModal}

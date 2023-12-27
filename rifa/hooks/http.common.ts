@@ -10,7 +10,8 @@ interface ErrorResponse {
 }
 
 // Create a custom Axios instance
-const serverURL = 'http://13.58.221.90/api/'
+const serverURL = 'http://localhost:3000/api'
+// const serverURL = 'http://13.58.221.90/api/'
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,
   headers: {

@@ -39,7 +39,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
   }, [getAnuncio])
 
   const urls = raffle?.RaffleImage.map((image) => ({
-    url: `http://13.58.221.90/${image.name}`,
+    url: `http://localhost:3000/${image.name}`,
   }))
 
   return (

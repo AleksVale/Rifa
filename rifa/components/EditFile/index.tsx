@@ -15,7 +15,11 @@ const EditFile: React.FC<EditFileProps> = ({ files, onDelete }) => {
           className="relative flex-none"
         >
           <Image
-            src={typeof file === 'string' ? file : URL.createObjectURL(file)}
+            src={
+              typeof file === 'string'
+                ? `http://localhost:3000/${file}`
+                : URL.createObjectURL(file)
+            }
             alt={`Imagem ${index + 1}`}
             width={300}
             height={112}

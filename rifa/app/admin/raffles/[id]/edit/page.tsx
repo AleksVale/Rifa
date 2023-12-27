@@ -58,6 +58,12 @@ const EditRaffle: React.FC = () => {
 
   const [files, setFiles] = React.useState<File[] | null>(null)
 
+  const [existingFiles, setExistingFiles] = React.useState<string[] | null>(
+    null,
+  )
+
+  const [deletedFiles, setDeletedFiles] = React.useState<string[] | null>(null)
+
   const watchName = watch('name', 'Carregando')
 
   const watchHasSortDay = watch('hasSortDay', false)
@@ -77,6 +83,7 @@ const EditRaffle: React.FC = () => {
       description: conteudoHTML,
       minTickets: Number(data.minTickets),
       drawingDate: data.hasSortDay ? data.drawingDate.toDate() : null,
+      deletedImages: deletedFiles,
     }
     const response = await RaffleService.update(raffle, id as string, files)
     response.success && router.push('/admin')
@@ -96,8 +103,20 @@ const EditRaffle: React.FC = () => {
     )
   }
 
+  const handleDeleteExistingPhoto = (index: number) => {
+    setDeletedFiles((value) =>
+      value ? [...value, existingFiles![index]] : [existingFiles![index]],
+    )
+    setExistingFiles((value) =>
+      value && value.length > 1
+        ? [...value.slice(0, index), ...value.slice(index + 1)]
+        : null,
+    )
+  }
+
   const getRaffle = useCallback(async () => {
     const response = await RaffleService.get(id as string)
+    setExistingFiles(response.RaffleImage.map((image) => image.name))
     reset({
       ...response,
       hasSortDay: !!response.drawingDate,
@@ -200,6 +219,10 @@ const EditRaffle: React.FC = () => {
                 />
               </label>
             </span>
+            <EditFile
+              files={existingFiles ?? []}
+              onDelete={handleDeleteExistingPhoto}
+            />
             <EditFile files={files ?? []} onDelete={handleDeletePhoto} />
           </div>
           <div className="flex space-x-7">
@@ -270,7 +293,7 @@ const EditRaffle: React.FC = () => {
               />
             )}
           />
-          <label className="label">
+          <span className="label">
             Tempo para Pagamento
             <div className="inline-block mt-2">
               <div>
@@ -291,7 +314,7 @@ const EditRaffle: React.FC = () => {
                 </svg>
               </div>
             </div>
-          </label>
+          </span>
           <Controller
             name="timeToPay"
             control={control}
@@ -332,28 +355,29 @@ const EditRaffle: React.FC = () => {
               </div>
             )}
           />
+          <div className="flex gap-2 flex-col sm:flex-row">
+            <Controller
+              name="prizes"
+              control={control}
+              render={({ field }) => (
+                <MyModal
+                  items={field.value}
+                  onSave={(prizes) => updateField(prizes, field)}
+                />
+              )}
+            />
 
-          <Controller
-            name="prizes"
-            control={control}
-            render={({ field }) => (
-              <MyModal
-                items={field.value}
-                onSave={(prizes) => updateField(prizes, field)}
-              />
-            )}
-          />
-
-          <Controller
-            name="promotions"
-            control={control}
-            render={({ field }) => (
-              <PromotionModal
-                items={field.value}
-                onSave={(promotions) => updateField(promotions, field)}
-              />
-            )}
-          />
+            <Controller
+              name="promotions"
+              control={control}
+              render={({ field }) => (
+                <PromotionModal
+                  items={field.value}
+                  onSave={(promotions) => updateField(promotions, field)}
+                />
+              )}
+            />
+          </div>
         </div>
 
         <button
