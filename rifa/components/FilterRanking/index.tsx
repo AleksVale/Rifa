@@ -1,6 +1,6 @@
 'use client'
 import { Select } from '@/components/Select/Select'
-import { RaffleService } from '@/services/Raffle.service'
+import { RaffleService, Ticket } from '@/services/Raffle.service'
 import { Buyer, TicketService } from '@/services/ticket.service'
 import { useCallback, useEffect, useState } from 'react'
 import { DataGrid, GridColDef, GridRowsProp, ptBR } from '@mui/x-data-grid'
@@ -15,8 +15,6 @@ const FilterRanking = () => {
   const [selectedRaffle, setSelectedRaffle] = useState('Selecione uma opção')
 
   const [showSensitiveData, setShowSensitiveData] = useState(false)
-
-  const [raffleTicketValue, setRaffleTicketValue] = useState(0)
 
   const [buyers, setBuyers] = useState<Buyer[]>([])
 
@@ -43,7 +41,13 @@ const FilterRanking = () => {
       field: 'value',
       headerName: 'Valor gasto',
       flex: 1,
-      valueGetter: (params) => params.row.Ticket.length * raffleTicketValue,
+      valueGetter: (params) =>
+        params.row.Transaction.reduce(
+          (acc: number, transaction: { value: number; paid: boolean }) => {
+            return transaction.paid ? acc + transaction.value : acc
+          },
+          0,
+        ),
       renderCell: (params) => (
         <div style={{ textAlign: 'center' }}>
           {new Intl.NumberFormat('pt-BR', {
@@ -56,10 +60,14 @@ const FilterRanking = () => {
     {
       field: 'quantity',
       headerName: 'Quantidade',
-      flex: 1,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.row.Ticket.length}</div>
-      ),
+      width: 150,
+      renderCell: (params) => {
+        const paidTickets = params.row.Ticket.filter(
+          (ticket: Ticket) => ticket.status === 'PAID',
+        )
+
+        return <div style={{ textAlign: 'center' }}>{paidTickets.length}</div>
+      },
     },
   ]
 
@@ -103,8 +111,14 @@ const FilterRanking = () => {
     {
       field: 'value',
       headerName: 'Valor gasto',
-      width: 150,
-      valueGetter: (params) => params.row.Ticket.length * raffleTicketValue,
+      flex: 1,
+      valueGetter: (params) =>
+        params.row.Transaction.reduce(
+          (acc: number, transaction: { value: number; paid: boolean }) => {
+            return transaction.paid ? acc + transaction.value : acc
+          },
+          0,
+        ),
       renderCell: (params) => (
         <div style={{ textAlign: 'center' }}>
           {new Intl.NumberFormat('pt-BR', {
@@ -118,14 +132,18 @@ const FilterRanking = () => {
       field: 'quantity',
       headerName: 'Quantidade',
       width: 150,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.row.Ticket.length}</div>
-      ),
+      renderCell: (params) => {
+        const paidTickets = params.row.Ticket.filter(
+          (ticket: Ticket) => ticket.status === 'PAID',
+        )
+
+        return <div style={{ textAlign: 'center' }}>{paidTickets.length}</div>
+      },
     },
   ]
 
   const [raffleOptions, setRaffleOptions] = useState<
-    { id: number; label: string; price: number }[]
+    { id: number; label: string }[]
   >([])
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -140,7 +158,6 @@ const FilterRanking = () => {
   const handleSelectRaffle = async (value: string) => {
     setSelectedRaffle(value)
     const raffle = raffleOptions.find((raffle) => raffle.label === value)
-    setRaffleTicketValue(raffle?.price ?? 0)
 
     router.push(
       `${pathname}?${createQueryString(
