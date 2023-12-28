@@ -1,45 +1,40 @@
-import { Ticket } from '@/services/Raffle.service'
+import { Raffle, Ticket } from '@/services/Raffle.service'
 import React from 'react'
 import DropDownMenu from '../DropdownMenu'
 
 interface RaffleInfoProps {
-  totalTickets: number
-  tickets: Ticket[]
-  id: number
-  name: string
+  raffle: Raffle
 }
 
-export function RaffleInfo({
-  id,
-  name,
-  tickets,
-  totalTickets,
-}: Readonly<RaffleInfoProps>) {
+export function RaffleInfo({ raffle }: Readonly<RaffleInfoProps>) {
   const calculatePercentage = (purchased: number, total: number) => {
     return (purchased / total) * 100
   }
 
-  const purchasedTickets = tickets.filter(
+  const purchasedTickets = raffle.tickets.filter(
     (ticket) => ticket.status.toLowerCase() === 'paid',
   ).length
 
-  const reservedTickets = tickets.filter(
+  const reservedTickets = raffle.tickets.filter(
     (ticket) => ticket.status.toLowerCase() === 'pending',
   ).length
 
   const percentagePurchased = calculatePercentage(
     purchasedTickets,
-    totalTickets,
+    raffle.ticketLimit,
   )
-  const percentageReserved = calculatePercentage(reservedTickets, totalTickets)
+  const percentageReserved = calculatePercentage(
+    reservedTickets,
+    raffle.ticketLimit,
+  )
   return (
     <div className="w-full bg-white rounded-lg">
       <div className="flex p-4 justify-between items-center bg-slate-50">
         <span>FOTO DA CAMPANHA</span>
-        <DropDownMenu raffleId={id} />
+        <DropDownMenu raffle={raffle} />
       </div>
       <div className="p-4">
-        <p>{name}</p>
+        <p>{raffle.name}</p>
         <div className="border bg-gray-50 rounded-lg h-3 overflow-hidden relative mt-1">
           <div
             style={{
@@ -58,7 +53,7 @@ export function RaffleInfo({
           ></div>
         </div>
         <p className="text-right mt-1 text-sm text-slate-500">
-          {percentagePurchased.toFixed(2)}% de {totalTickets} tickets
+          {percentagePurchased.toFixed(2)}% de {raffle.ticketLimit} tickets
         </p>
         <p className="text-right mt-1 text-sm"></p>
         <div className="flex mt-6 flex-wrap gap-2 text-sm">

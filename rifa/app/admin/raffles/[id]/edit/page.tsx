@@ -23,8 +23,8 @@ const schema = z.object({
   description: z
     .string()
     .min(3, { message: 'Description must be at least 3 characters long' }),
-  minTickets: z.string(),
-  maxTickets: z.number(),
+  minTickets: z.coerce.number({ invalid_type_error: 'Deve ser um número' }),
+  maxTickets: z.coerce.number({ invalid_type_error: 'Deve ser um número' }),
   timeToPay: z.string().min(1, { message: 'Time to pay must be at least 1' }),
   drawingDate: z.any(),
   hasSortDay: z.boolean(),
@@ -122,7 +122,7 @@ const EditRaffle: React.FC = () => {
       hasSortDay: !!response.drawingDate,
       description:
         response.description?.replace(/<p>/g, '').replace(/<\/p>/g, '\n') ?? '',
-      minTickets: `${response.minTickets}`,
+      minTickets: response.minTickets ?? 1,
       maxTickets: response.maxTickets ?? 300,
       timeToPay: response.timeToPay ?? '1 hora',
       showRanking: response.showRanking ?? false,
@@ -197,7 +197,7 @@ const EditRaffle: React.FC = () => {
             ></textarea>
           </div>
           <div className="flex gap-1">
-            <label className="label">Imagens</label>
+            <span className="label">Imagens</span>
             <div className="inline-flex items-center px-2 py-0.5 default-radius text-xs font-medium bg-green-100 text-green-800">
               <b className="mr-1">Tamanho recomendado: </b> 1365x758 pixels{' '}
             </div>
