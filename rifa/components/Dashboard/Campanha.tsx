@@ -76,12 +76,7 @@ const Campanha: React.FC = () => {
       {raffles.length > 0 ? (
         raffles.map((raffle) => (
           <div key={raffle.id} className="pb-2">
-            <RaffleInfo
-              id={raffle.id}
-              name={raffle.name}
-              tickets={raffle.tickets}
-              totalTickets={raffle.ticketLimit}
-            />
+            <RaffleInfo raffle={raffle} />
           </div>
         ))
       ) : (
