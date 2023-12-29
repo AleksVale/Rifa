@@ -15,7 +15,6 @@ export default function DropDownMenu({ raffle }: DropDownMenuProps) {
   const router = useRouter()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const [shareModal, setShareModal] = React.useState(false)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -26,16 +25,13 @@ export default function DropDownMenu({ raffle }: DropDownMenuProps) {
     setAnchorEl(null)
   }
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false)
-  }
-
   const navigateTo = (path: string) => {
     router.push(path)
   }
 
   const handleShareCampaign = () => {
     setShareModal(true)
+    handleClose()
   }
 
   return (
@@ -74,14 +70,6 @@ export default function DropDownMenu({ raffle }: DropDownMenuProps) {
         <MenuItem onClick={handleShareCampaign}>Compartilhar</MenuItem>
         <MenuItem onClick={handleClose}>Informar vencedores</MenuItem>
       </Menu>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000} // Tempo em milissegundos que o alerta fica aberto
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        message="Mensagem copiada para a área de transferência!"
-      />
     </div>
   )
 }

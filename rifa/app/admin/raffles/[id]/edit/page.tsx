@@ -89,9 +89,10 @@ const EditRaffle: React.FC = () => {
     response.success && router.push('/admin')
   }
 
+  console.log(errors)
+
   const handleSelectFiles = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    console.log(files)
     setFiles(Array.from(files ?? []))
   }
 
@@ -128,6 +129,7 @@ const EditRaffle: React.FC = () => {
       showRanking: response.showRanking ?? false,
       promotions: response.Promotion ?? [],
       prizes: response.Prize ?? [],
+      drawingDate: dayjs(response.drawingDate),
     })
   }, [id, reset])
 
@@ -268,6 +270,7 @@ const EditRaffle: React.FC = () => {
           </label>
           {watchHasSortDay && (
             <Controller
+              defaultValue={dayjs()}
               name={'drawingDate'}
               control={control}
               render={({ field }) => (
@@ -282,13 +285,14 @@ const EditRaffle: React.FC = () => {
 
           <Controller
             name={'hasSortDay'}
+            defaultValue={false}
             control={control}
             render={({ field }) => (
               <Toggle
                 label="INFORMAR DATA"
                 enabled={field.value}
                 setEnabled={(enabled) => {
-                  field.onChange(enabled) // Atualiza o valor do campo controlado
+                  field.onChange(enabled)
                 }}
               />
             )}
@@ -316,6 +320,7 @@ const EditRaffle: React.FC = () => {
             </div>
           </span>
           <Controller
+            defaultValue="1 hora"
             name="timeToPay"
             control={control}
             render={({ field }) => (
@@ -342,6 +347,7 @@ const EditRaffle: React.FC = () => {
 
           <Controller
             name={'showRanking'}
+            defaultValue={false}
             control={control}
             render={({ field }) => (
               <div className="flex justify-between items-center">

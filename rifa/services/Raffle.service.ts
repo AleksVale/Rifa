@@ -78,8 +78,8 @@ interface CreateRaffleDTO {
 }
 
 export class RaffleService {
-  static async list() {
-    return await http.get<Raffle[]>('raffles')
+  static async list(status?: 'active' | 'finished') {
+    return await http.get<Raffle[]>(`raffles?status=${status}`)
   }
 
   static async create(data: CreateRaffleDTO) {

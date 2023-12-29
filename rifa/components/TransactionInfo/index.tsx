@@ -1,14 +1,11 @@
-import { Ticket } from '@/services/Raffle.service'
-import { Buyer } from '@/services/ticket.service'
 import { Transaction } from '@/services/transaction.service'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment } from 'react'
 import TailwindBadge from '../TailwindBadge'
 import {
   FaCalendar,
   FaCircleDollarToSlot,
   FaEllipsisVertical,
   FaTicket,
-  FaTicketSimple,
 } from 'react-icons/fa6'
 import { Menu, Transition } from '@headlessui/react'
 import dayjs from 'dayjs'
@@ -19,8 +16,6 @@ interface TransactionInfoProps {
 
 export default function TransactionInfo({ transaction }: TransactionInfoProps) {
   const isPending = !transaction.paid
-  const ticketCount = transaction.Ticket?.length ?? 0
-
   return (
     <div className="px-4 sm:px-6 py-4 text-sm">
       <div className="flex items-center justify-between gap-x-4">
@@ -66,8 +61,8 @@ export default function TransactionInfo({ transaction }: TransactionInfoProps) {
           </Transition>
         </Menu>
       </div>
-      <div className="relative">
-        <div className="mt-1 text-gray-500 flex flex-col sm:flex-row flex-wrap items-start gap-x-4 gap-y-1.5">
+      <div className="relative ">
+        <div className="mt-1 text-gray-500 flex flex-col sm:flex-row flex-wrap items-start gap-x-4 gap-y-1.5 z-9 border-b border-b-slate-400">
           <span className="inline-flex items-center gap-1.5">
             <FaCircleDollarToSlot />
             {new Intl.NumberFormat('pt-BR', {
@@ -84,6 +79,13 @@ export default function TransactionInfo({ transaction }: TransactionInfoProps) {
             <FaCalendar />
             Criada em {dayjs(transaction.createdAt).format('DD/MM/YYYY, hh:mm')}
           </span>
+          {transaction.updatedAt && transaction.status !== 'PENDING' && (
+            <span className="inline-flex items-center gap-1.5">
+              <FaCalendar />
+              Atualizada em{' '}
+              {dayjs(transaction.updatedAt).format('DD/MM/YYYY, hh:mm')}
+            </span>
+          )}
         </div>
         <hr className="my-3.5 block sm:hidden" />
         <div className="mt-3 text-gray-500 flex flex-wrap items-start gap-x-4 gap-y-1.5">

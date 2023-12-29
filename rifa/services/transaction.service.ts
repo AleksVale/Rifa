@@ -7,6 +7,7 @@ export interface Transaction {
   amount: number
   value: number
   paid: boolean
+  status: 'PAID' | 'CANCELLED' | 'PENDING' | 'EXPIRED'
   expirationDate: string | null
   buyerId: number
   createdAt: string
@@ -17,6 +18,8 @@ export interface Transaction {
 
 export class TransactionService {
   static async getTransactionFromRaffle(id: string) {
-    return await http.get<Transaction[]>('transaction/raffle/' + id)
+    return await http.get<Transaction[]>(
+      'transaction/raffle/' + id + window.location.search,
+    )
   }
 }

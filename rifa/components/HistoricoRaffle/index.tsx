@@ -1,141 +1,31 @@
 'use client'
 import { Select } from '@/components/Select/Select'
 import { Transition } from '@headlessui/react'
-import { RaffleService, Ticket } from '@/services/Raffle.service'
-import { Buyer, TicketService } from '@/services/ticket.service'
-import { useEffect, useState, useCallback } from 'react'
+import { RaffleService } from '@/services/Raffle.service'
+import { useEffect, useState, useCallback, FocusEvent } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { DataGrid, GridColDef, GridRowsProp, ptBR } from '@mui/x-data-grid'
-import { formatPhoneNumber } from '@/utils/formatter'
 import { Transaction, TransactionService } from '@/services/transaction.service'
 import TransactionInfo from '../TransactionInfo'
+import dayjs from 'dayjs'
+import { DateInput } from '../DateInput'
 
-const selectOptions = [{ id: 'gato', label: 'cachorro' }]
+const reservationOptions = [
+  { id: 'sem_filtro', label: 'Sem filtro' },
+  { id: 'PENDING', label: 'Pendente' },
+  { id: 'PAID', label: 'Pago' },
+  { id: 'EXPIRED', label: 'Expirado' },
+  { id: 'CANCELLED', label: 'Cancelado' },
+]
+
+const filters = [
+  { id: 'sem_filtro', label: 'Sem filtro' },
+  { id: 'ticket', label: 'Bilhete' },
+  { id: 'name', label: 'Nome do comprador' },
+  { id: 'email', label: 'Email do comprador' },
+  { id: 'phone', label: 'Telefone do comprador' },
+]
 
 const HistoricoRaffle = () => {
-  const columns: GridColDef[] = [
-    {
-      field: 'place',
-      headerName: 'Colocação',
-      flex: 1,
-      valueGetter: (params) => params.row.place,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.value}º</div>
-      ),
-    },
-    {
-      field: 'name',
-      headerName: 'Nome',
-      width: 150,
-      valueGetter: (params) => params.row.name,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.value}</div>
-      ),
-    },
-    {
-      field: 'value',
-      headerName: 'Valor gasto',
-      flex: 1,
-      valueGetter: (params) =>
-        params.row.Transaction.reduce(
-          (acc: number, transaction: { value: number; paid: boolean }) => {
-            return transaction.paid ? acc + transaction.value : acc
-          },
-          0,
-        ),
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>
-          {new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          }).format(params.value)}
-        </div>
-      ),
-    },
-    {
-      field: 'quantity',
-      headerName: 'Quantidade',
-      width: 150,
-      renderCell: (params) => {
-        const paidTickets = params.row.Ticket.filter(
-          (ticket: Ticket) => ticket.status === 'PAID',
-        )
-
-        return <div style={{ textAlign: 'center' }}>{paidTickets.length}</div>
-      },
-    },
-  ]
-
-  const columsWithSensitiveData: GridColDef[] = [
-    {
-      field: 'place',
-      headerName: 'Colocação',
-      width: 150,
-      valueGetter: (params) => params.row.place,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.value}º</div>
-      ),
-    },
-    {
-      field: 'name',
-      headerName: 'Nome',
-      width: 150,
-      valueGetter: (params) => params.row.name,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.value}</div>
-      ),
-    },
-    {
-      field: 'email',
-      headerName: 'E-mail',
-      flex: 1,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>{params.value}</div>
-      ),
-    },
-    {
-      field: 'phone',
-      headerName: 'Telefone',
-      flex: 1,
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>
-          {formatPhoneNumber(params.value)}
-        </div>
-      ),
-    },
-    {
-      field: 'value',
-      headerName: 'Valor gasto',
-      flex: 1,
-      valueGetter: (params) =>
-        params.row.Transaction.reduce(
-          (acc: number, transaction: { value: number; paid: boolean }) => {
-            return transaction.paid ? acc + transaction.value : acc
-          },
-          0,
-        ),
-      renderCell: (params) => (
-        <div style={{ textAlign: 'center' }}>
-          {new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          }).format(params.value)}
-        </div>
-      ),
-    },
-    {
-      field: 'quantity',
-      headerName: 'Quantidade',
-      width: 150,
-      renderCell: (params) => {
-        const paidTickets = params.row.Ticket.filter(
-          (ticket: Ticket) => ticket.status === 'PAID',
-        )
-
-        return <div style={{ textAlign: 'center' }}>{paidTickets.length}</div>
-      },
-    },
-  ]
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -144,29 +34,104 @@ const HistoricoRaffle = () => {
 
   const [selectedRaffle, setSelectedRaffle] = useState('Selecione uma opção')
 
+  const [statusReservation, setStatusReservation] = useState('Sem filtro')
+
+  const [filterOptions, setFilterOptions] = useState('Sem filtro')
+
+  const [startDate, setStartDate] = useState<dayjs.Dayjs>(
+    dayjs().subtract(1, 'week'),
+  )
+
+  const [endDate, setEndDate] = useState<dayjs.Dayjs>(dayjs())
+
   const [raffleOptions, setRaffleOptions] = useState<
     { id: number; label: string }[]
   >([])
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
-
-      return params.toString()
+    (params: { [key: string]: string | number | boolean }): string => {
+      return Object.entries(params)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              value.toString(),
+            )}`,
+        )
+        .join('&')
     },
-    [searchParams],
+    [],
   )
 
+  const handleChangeStartDate = (value: dayjs.Dayjs | null) => {
+    if (!value) return
+
+    const params = new URLSearchParams(window.location.search)
+
+    params.set('startDate', value.format('YYYY-MM-DD'))
+
+    router.push(`${pathname}?${params}`)
+  }
+
+  const handleChangeEndDate = (value: dayjs.Dayjs | null) => {
+    if (!value) return
+
+    const params = new URLSearchParams(window.location.search)
+
+    params.set('endDate', value.format('YYYY-MM-DD'))
+
+    router.push(`${pathname}?${params}`)
+  }
+
+  const handleChangeBlurValue = async (event: FocusEvent<HTMLInputElement>) => {
+    if (filterOptions === 'Sem filtro') return
+    const value = event.target.value
+
+    const params = new URLSearchParams(window.location.search)
+
+    params.set(
+      filters.find((value) => value.label === filterOptions)?.id ?? 'name',
+      value,
+    )
+    router.push(`${pathname}?${params}`)
+  }
+
+  const handleChangeFilterOption = async (value: string) => {
+    const params = new URLSearchParams(window.location.search)
+    const oldFilter =
+      filters.find((value) => value.label === filterOptions)?.id ?? 'jesus'
+    params.delete(oldFilter)
+    router.push(`${pathname}?${params}`)
+    setFilterOptions(value)
+  }
+
+  const resetSelectValues = () => {
+    setStatusReservation('Sem filtro')
+    setFilterOptions('Sem filtro')
+  }
+
+  const handleChangeReservationStatus = async (value: string) => {
+    setStatusReservation(value)
+
+    const status =
+      reservationOptions.find((reservation) => reservation.label === value)
+        ?.id ?? '0'
+
+    const params = new URLSearchParams(window.location.search)
+
+    params.set('status', status)
+
+    router.push(`${pathname}?${params}`)
+  }
+
   const handleSelectRaffle = async (value: string) => {
+    resetSelectValues()
     setSelectedRaffle(value)
     const raffle = raffleOptions.find((raffle) => raffle.label === value)
 
     router.push(
-      `${pathname}?${createQueryString(
-        'raffle',
-        raffle?.id.toString() ?? '0',
-      )}`,
+      `${pathname}?${createQueryString({
+        raffle: raffle?.id.toString() ?? '0',
+      })}`,
     )
   }
 
@@ -205,7 +170,7 @@ const HistoricoRaffle = () => {
       </div>
       <div className="box-border border-neutral-950 h-full w-full p-8 border rounded-lg relative top-15">
         <div className="container mx-auto flex flex-col md:flex-row">
-          <label className="text-[#334155]">Selecione uma campanha</label>
+          <span className="text-[#334155]">Selecione uma campanha</span>
         </div>
         <div className="container flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:space-x-2">
           <div className="flex-1">
@@ -275,7 +240,11 @@ const HistoricoRaffle = () => {
                 Status da Reserva
               </label>
               <div>
-                <Select options={selectOptions} value="Te" />
+                <Select
+                  options={reservationOptions}
+                  value={statusReservation}
+                  onChange={handleChangeReservationStatus}
+                />
               </div>
               <p className="helper-info mt-1 mb-0 text-[#64748b] text-sm">
                 Use o filtro para encontrar mais rápido as reservas
@@ -286,11 +255,47 @@ const HistoricoRaffle = () => {
                 Filtro da pesquisa
               </label>
               <div>
-                <Select options={selectOptions} value="po" />
+                <Select
+                  options={filters}
+                  value={filterOptions}
+                  onChange={handleChangeFilterOption}
+                />
               </div>
               <p className="helper-info mt-1 mb-0 text-[#64748b] text-sm">
                 Use esse filtro para ser específico na pesquisa
               </p>
+            </div>
+
+            <label>
+              <span className="text-[#334155] mx-auto block">Pesquisa</span>
+              <input
+                type="text"
+                onBlur={handleChangeBlurValue}
+                className="block appearance-none border border-slate-300 w-full py-2 px-3 text-gray-700 leading-tight rounded focus:outline-green-300"
+              />
+              <p className="text-[#64748b] text-sm mt-1 mb-0">
+                Este campo precisa do filtro acima.
+              </p>
+            </label>
+
+            <div className="flex justify-between flex-col sm:flex-row">
+              <div>
+                <span>Início</span>
+                <DateInput
+                  value={startDate}
+                  handleChange={handleChangeStartDate}
+                  shouldDisableFuture
+                />
+              </div>
+
+              <div>
+                <span>Fim</span>
+                <DateInput
+                  value={endDate}
+                  handleChange={handleChangeEndDate}
+                  shouldDisableFuture
+                />
+              </div>
             </div>
           </fieldset>
         </Transition>

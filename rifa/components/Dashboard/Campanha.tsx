@@ -1,22 +1,26 @@
 'use client'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
-import { FaTriangleExclamation, FaTicket, FaFaceSadCry } from 'react-icons/fa6'
+import { FaTicket, FaFaceSadCry } from 'react-icons/fa6'
 import { Select } from '../Select/Select'
 import { Raffle, RaffleService } from '@/services/Raffle.service'
 import { RaffleInfo } from '../RaffleInfo'
 
 const Campanha: React.FC = () => {
-  const [hasPayment, setHasPayment] = React.useState(true)
   const [raffles, setRaffles] = React.useState<Raffle[]>([])
   const [raffleStatus, setRaffleStatus] = React.useState('Em andamento')
 
-  const getRaffles = async () => {
-    const response = await RaffleService.list()
+  const getRaffles = async (status: 'active' | 'finished') => {
+    const response = await RaffleService.list(status)
     setRaffles(response.data)
   }
+
+  const handleChangeSelect = (value: string) => {
+    setRaffleStatus(value)
+    getRaffles(value === 'Em andamento' ? 'active' : 'finished')
+  }
   useEffect(() => {
-    getRaffles()
+    getRaffles('active')
   }, [])
   return (
     <div className="container mx-auto mt-6">
@@ -37,23 +41,6 @@ const Campanha: React.FC = () => {
           </a>
         </div>
       )}
-      {!hasPayment ? (
-        <div className="bg-black-2 rounded-lg text-lg text-white mt-14 font-medium ">
-          <Link
-            href={'/admin#pagamento'}
-            className="p-5  items-center flex flex-col xsm:flex-row gap-4"
-          >
-            <div>
-              <FaTriangleExclamation size="22" color="#fff" />
-            </div>
-            <span>
-              Você ainda não possui nenhum meio de pagamento para receber o
-              valor das reservas.{' '}
-              <span className="font-medium">Clique aqui para configurar!</span>
-            </span>
-          </Link>
-        </div>
-      ) : null}
       <h2 className="mt-4 text-xl flex gap-2 items-center text-zinc-800">
         <FaTicket size="24px" color="#536654" /> Minhas campanhas
       </h2>
@@ -63,7 +50,7 @@ const Campanha: React.FC = () => {
       <div className="pt-2 pb-4">
         <Select
           value={raffleStatus}
-          onChange={(value) => setRaffleStatus(value)}
+          onChange={handleChangeSelect}
           options={[
             {
               id: 'andamento',

@@ -2,9 +2,8 @@ import { Metadata } from 'next'
 
 import HistoricoRaffle from '@/components/HistoricoRaffle'
 export const metadata: Metadata = {
-  title: 'Historico',
+  title: 'Histórico de Colaborações',
   description: 'This is the raffle history',
-  // other metadata
 }
 
 const Profile = () => {
