@@ -5,16 +5,22 @@ import {
   FaCalendar,
   FaCircleDollarToSlot,
   FaEllipsisVertical,
+  FaEnvelope,
   FaTicket,
+  FaUser,
 } from 'react-icons/fa6'
 import { Menu, Transition } from '@headlessui/react'
 import dayjs from 'dayjs'
 
 interface TransactionInfoProps {
   transaction: Transaction
+  showSensitiveData: boolean
 }
 
-export default function TransactionInfo({ transaction }: TransactionInfoProps) {
+export default function TransactionInfo({
+  transaction,
+  showSensitiveData,
+}: TransactionInfoProps) {
   const isPending = !transaction.paid
   return (
     <div className="px-4 sm:px-6 py-4 text-sm">
@@ -62,7 +68,19 @@ export default function TransactionInfo({ transaction }: TransactionInfoProps) {
         </Menu>
       </div>
       <div className="relative ">
-        <div className="mt-1 text-gray-500 flex flex-col sm:flex-row flex-wrap items-start gap-x-4 gap-y-1.5 z-9 border-b border-b-slate-400">
+        <div className="mt-1 text-gray-500 flex flex-col sm:flex-row flex-wrap items-start gap-x-4 gap-y-2 z-9 border-b border-b-slate-400 pb-2">
+          {showSensitiveData && (
+            <>
+              <span className="inline-flex flex-wrap items-center gap-x-1.5">
+                <FaUser color="gray" size={14} />
+                Nome {transaction.buyer.name}
+              </span>
+              <span className="inline-flex flex-wrap items-center gap-x-1.5">
+                <FaEnvelope color="gray" size={14} />
+                Email {transaction.buyer.email}
+              </span>
+            </>
+          )}
           <span className="inline-flex items-center gap-1.5">
             <FaCircleDollarToSlot />
             {new Intl.NumberFormat('pt-BR', {
