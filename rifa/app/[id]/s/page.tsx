@@ -1,12 +1,13 @@
 'use client'
 import React, { useCallback, useEffect } from 'react'
 import Image from 'next/image'
-import { Button, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import Slider from '@/components/Slider/Slider'
 import { Raffle, RaffleService } from '@/services/Raffle.service'
 import FormDialog from '@/components/TicketBuyModal'
 import { useRouter } from 'next/navigation'
 import PaymentModal from '@/components/PaymentsModal'
+import ThemeToggle from '@/components/ThemeToggle'
 
 function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
   const router = useRouter()
@@ -43,9 +44,10 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
   }))
 
   return (
-    <main className=" bg-slate-200">
-      <header className="bg-white fixed w-full h-10 mb-16 z-99999 border-b border-b-gray-300 ">
+    <main className=" bg-slate-200 dark:bg-slate-900 dark:text-slate-50">
+      <header className="bg-white fixed flex justify-between p-2 w-full h-12 mb-16 z-99999 border-b border-b-gray-300 dark:bg-black">
         <PaymentModal />
+        <ThemeToggle />
       </header>
       <div className="container pb-6 pt-14 px-6 ml-auto mr-auto max-w-280">
         {urls && (
@@ -53,7 +55,9 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             <Slider urls={urls} />
           </div>
         )}
-        <div className="flex font-bold text-black text-2xl">{raffle?.name}</div>
+        <div className="flex font-bold text-black dark:text-white text-2xl">
+          {raffle?.name}
+        </div>
         <hr className="my-4 dark:border-gray-700"></hr>
         <div className="space-y-6 justify-between">
           <div className="flex items-start gap-3">
@@ -95,7 +99,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
         </div>
         <hr className="my-4 dark:border-gray-700"></hr>
         <section className="grid gap-4 sm:gap-6 text-white dark:text-gray-200">
-          <div className="rounded-2xl p-4 sm:p-6 border bg-orange-400 border-orange-600 dark:bg-orange-600 dark:border-orange-300">
+          <div className="rounded-2xl p-4 sm:p-6 border bg-orange-400 border-orange-600 dark:bg-orange-800 dark:border-orange-300">
             <div className="flex items-center gap-3">
               <Image
                 src="/images/logo/logo.png"
@@ -184,7 +188,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
               <TextField
                 type="number"
                 inputProps={{ min: 1, style: { textAlign: 'center' } }}
-                className="input text-center"
+                className="input text-center dark:text-white"
                 fullWidth
                 onChange={(e) => setTickets(Number(e.target.value))}
                 value={tickets}
@@ -212,7 +216,7 @@ function Anuncio({ params }: Readonly<{ params: { id: string } }>) {
             <div className="max-w-xl mx-auto">
               <button
                 type="button"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-8 w-full"
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-8 w-full dark:bg-green-900 dark:hover:bg-green-800"
                 onClick={() => tickets > 0 && setOpen(true)}
               >
                 RESERVAR
