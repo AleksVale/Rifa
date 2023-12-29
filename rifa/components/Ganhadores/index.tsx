@@ -68,6 +68,8 @@ const Ganhadores = () => {
                   src="https://s3.incrivelsorteios.com/redimensiona?key=150x150/default.jpg"
                   decoding="async"
                   data-nimg="fill"
+                  width={100}
+                  height={100}
                 />
               </div>
             </div>
